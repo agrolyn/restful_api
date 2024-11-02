@@ -1,0 +1,9 @@
+Flask-SQLAlchemy
+flask
+mysqlclient
+pymysql
+python-dotenv
+flask-migrate
+bcrypt
+uuid
+werkzeug
