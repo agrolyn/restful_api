@@ -1,11 +1,11 @@
 from datetime import timedelta
-from functools import wraps
 import os
-from flask import Flask, flash, redirect, session, url_for
+from flask import Flask
 from controllers import articles_controller
 from controllers import recipes_controller
 from models.models import db
 from flask_migrate import Migrate
+from flasgger import Swagger
 
 app = Flask(__name__)
 
@@ -22,12 +22,14 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 app.secret_key = os.urandom(24)
 
 db.init_app(app)  # Initialize the app with db
-
 migrate = Migrate(app, db)
+
+# Configure Swagger
+swagger = Swagger(app, template_file='api_docs.yml')
 
 @app.route("/", methods=["GET"])
 def index():
-    return "REST API"
+    return "<div style='display: flex; justify-content: center; align-items: center; width: 100%; min-height: 100vh; font-size: 1.5rem; font-weight: semibold;'>AGROLYN RESTFUL API</div>"
 
 ######################################################################
 ######################## Articles Endpoint ###########################
@@ -52,3 +54,6 @@ def all_recipes():
 @app.route("/recipes/<int:id>/", methods=["GET"])
 def detail_recipe(id):
     return recipes_controller.get_detail_recipes(id)
+
+if __name__ == "__main__":
+    app.run(debug=True)

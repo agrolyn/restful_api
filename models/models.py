@@ -16,6 +16,12 @@ class PlantTypes(db.Model):
     disccus = relationship('Disccus', backref='plant_types', lazy=True)
     plant_dis = relationship('PlantDis', backref='plant_types', lazy=True)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'plant_name': self.plant_name,
+        }
+
     def __repr__(self):
         return f"PlantTypes('{self.plant_name}')"
 
@@ -28,6 +34,12 @@ class Roles(db.Model):
     # Relationship
     users = relationship('Users', backref='roles', lazy=True)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'role_name': self.role_name,
+        }
+
     def __repr__(self):
         return f"Roles('{self.role_name}')"
 
@@ -39,6 +51,12 @@ class TrsStatus(db.Model):
 
     # Relationship
     transactions = relationship('Transactions', backref='trs_status', lazy=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'status': self.status,
+        }
 
     def __repr__(self):
         return f"TrsStatus('{self.status}')"
@@ -60,7 +78,7 @@ class Articles(db.Model):
             'thumbnail': self.thumbnail,
             'description': self.description,
             'location': self.location,
-            'released_date': self.released_date
+            'released_date': self.released_date,
         }
 
     def __repr__(self):
@@ -108,6 +126,18 @@ class Users(db.Model):
     reviews = relationship('Reviews', backref='users', lazy=True)
     transactions = relationship('Transactions', backref='users', lazy=True)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'address': self.address,
+            'phone_number': self.phone_number,
+            'img_profile': self.img_profile,
+            'roles_id': self.roles_id,
+            'is_verified': self.is_verified,
+        }
+
     def __repr__(self):
         return f"Users('{self.name}', '{self.email}')"
 
@@ -119,6 +149,12 @@ class ProductCategories(db.Model):
 
     # Relationship
     products = relationship('Products', backref='product_categories', lazy=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'category_name': self.category_name,
+        }
 
     def __repr__(self):
         return f"ProductCategories('{self.category_name}')"
@@ -140,6 +176,19 @@ class Products(db.Model):
     orders = relationship('Orders', backref='products', lazy=True)
     reviews = relationship('Reviews', backref='products', lazy=True)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'product_name': self.product_name,
+            'desc_product': self.desc_product,
+            'img_product': self.img_product,
+            'price': self.price,
+            'stock': self.stock,
+            'sold': self.sold,
+            'product_categories_id': self.product_categories_id,
+            'users_id': self.users_id,
+        }
+
     def __repr__(self):
         return f"Products('{self.product_name}', '{self.price}')"
 
@@ -155,6 +204,15 @@ class Questions(db.Model):
     # Relationship
     disccus = relationship('Disccus', backref='questions', lazy=True)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'question': self.question,
+            'like_num': self.like_num,
+            'users_id': self.users_id,
+            'plant_types_id': self.plant_types_id,
+        }
+
     def __repr__(self):
         return f"Questions('{self.question}')"
 
@@ -168,6 +226,16 @@ class Disccus(db.Model):
     like_num = db.Column(db.Integer, default=0, nullable=False)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'answer': self.answer,
+            'questions_id': self.questions_id,
+            'plant_types_id': self.plant_types_id,
+            'like_num': self.like_num,
+            'users_id': self.users_id,
+        }
+
     def __repr__(self):
         return f"Disccus('{self.answer}')"
 
@@ -179,6 +247,15 @@ class Orders(db.Model):
     qty = db.Column(db.Integer, default=0, nullable=False)
     products_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'price_order': self.price_order,
+            'qty': self.qty,
+            'products_id': self.products_id,
+            'users_id': self.users_id,
+        }
 
     def __repr__(self):
         return f"Orders('{self.price_order}', '{self.qty}')"
@@ -193,6 +270,16 @@ class PlantDis(db.Model):
     plant_types_id = db.Column(db.Integer, db.ForeignKey('plant_types.id'), nullable=False)
     description = db.Column(db.Text, nullable=False)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'dis_name': self.dis_name,
+            'dis_indo_name': self.dis_indo_name,
+            'handling': self.handling,
+            'plant_types_id': self.plant_types_id,
+            'description': self.description,
+        }
+
     def __repr__(self):
         return f"PlantDis('{self.dis_name}')"
 
@@ -205,6 +292,15 @@ class Reviews(db.Model):
     products_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'review': self.review,
+            'rating': self.rating,
+            'products_id': self.products_id,
+            'users_id': self.users_id,
+        }
+
     def __repr__(self):
         return f"Reviews('{self.review}', '{self.rating}')"
 
@@ -216,6 +312,15 @@ class Transactions(db.Model):
     transaction_amount = db.Column(db.Integer, default=0, nullable=False)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     trs_status_id = db.Column(db.Integer, db.ForeignKey('trs_status.id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'transaction_date': self.transaction_date,
+            'transaction_amount': self.transaction_amount,
+            'users_id': self.users_id,
+            'trs_status_id': self.trs_status_id,
+        }
 
     def __repr__(self):
         return f"Transactions('{self.transaction_date}', '{self.transaction_amount}')"
