@@ -8,3 +8,5 @@ bcrypt
 uuid
 werkzeug
 flasgger
+Flask-JWT-Extended 
+Flask-Mail

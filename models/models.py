@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import pymysql
+import bcrypt
 
 pymysql.install_as_MySQLdb()
 
@@ -137,6 +138,15 @@ class Users(db.Model):
             'roles_id': self.roles_id,
             'is_verified': self.is_verified,
         }
+    
+    def set_password(self, pwd):
+        # Generate bcrypt hash
+        salt = bcrypt.gensalt()
+        self.password = bcrypt.hashpw(pwd.encode('utf-8'), salt).decode('utf-8')
+    
+    def check_password(self, password):
+        # Check bcrypt hash
+        return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
 
     def __repr__(self):
         return f"Users('{self.name}', '{self.email}')"

@@ -4,10 +4,173 @@ info:
   version: "1.0"
   description: "API Documentation For AGROLYN Apps."
 
+tags:
+  - name: "auth"
+    description: "Endpoints related to authentication and authorization"
+  - name: "article"
+    description: "Endpoints related to articles"
+  - name: "recipe"
+    description: "Endpoints related to recipes"
+
 paths:
+  /register:
+    post:
+      tags:
+        - "auth"
+      summary: "Register a new user"
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              address:
+                type: string
+              phone_number:
+                type: string
+              password:
+                type: string
+              roles_id:
+                type: integer
+      responses:
+        201:
+          description: "User registered successfully. Check email to confirm account."
+        400:
+          description: "Email already exists"
+
+  /confirm/{token}:
+    get:
+      tags:
+        - "auth"
+      summary: "Confirm user's email"
+      parameters:
+        - name: token
+          in: path
+          required: true
+          type: string
+          description: "The confirmation token sent via email"
+      responses:
+        200:
+          description: "Email verified successfully"
+        400:
+          description: "Invalid or expired confirmation link"
+
+  /login:
+    post:
+      tags:
+        - "auth"
+      summary: "Login user and obtain JWT token"
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: credentials
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: "Logged in successfully and JWT token provided"
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
+                description: "JWT token for authenticated requests"
+        401:
+          description: "Invalid credentials"
+        403:
+          description: "Email not verified"
+
+  /forgot_password:
+    post:
+      tags:
+        - "auth"
+      summary: "Request password reset link"
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: email
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+      responses:
+        200:
+          description: "Password reset email sent"
+        404:
+          description: "Email not found"
+
+  /reset_password/{token}:
+    post:
+      tags:
+        - "auth"
+      summary: "Reset user password"
+      consumes:
+        - application/json
+      parameters:
+        - name: token
+          in: path
+          required: true
+          type: string
+          description: "The reset token sent via email"
+        - in: body
+          name: password
+          required: true
+          schema:
+            type: object
+            properties:
+              new_password:
+                type: string
+      responses:
+        200:
+          description: "Password reset successfully"
+        400:
+          description: "Invalid or expired reset link"
+        404:
+          description: "User not found"
+
+  /logout:
+    post:
+      tags:
+        - "auth"
+      summary: "Logout user and invalidate session"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token"
+      responses:
+        200:
+          description: "Logged out successfully"
+
   /articles/:
     get:
+      tags:
+        - "article"
       summary: "Get all articles"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token"
       responses:
         200:
           description: "A list of articles"
@@ -38,8 +201,15 @@ paths:
 
   /articles/{id}/:
     get:
+      tags:
+        - "article"
       summary: "Get article detail"
       parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token"
         - name: id
           in: path
           required: true
@@ -75,7 +245,15 @@ paths:
 
   /recipes/:
     get:
+      tags:
+        - "recipe"
       summary: "Get all recipes"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token"
       responses:
         200:
           description: "A list of recipes"
@@ -102,8 +280,15 @@ paths:
 
   /recipes/{id}/:
     get:
+      tags:
+        - "recipe"
       summary: "Get recipe detail"
       parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token"
         - name: id
           in: path
           required: true
