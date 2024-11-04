@@ -117,6 +117,21 @@ paths:
           description: "Email not found"
 
   /reset_password/{token}:
+    get:
+      tags:
+        - "auth"
+      summary: "Confirm user's email reset password"
+      parameters:
+        - name: token
+          in: path
+          required: true
+          type: string
+          description: "The confirmation token reset password sent via email"
+      responses:
+        200:
+          description: "Email reset password verified successfully"
+        400:
+          description: "Invalid or expired confirmation link"
     post:
       tags:
         - "auth"

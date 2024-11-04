@@ -52,7 +52,7 @@ def login_acc():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
-    user = Users.query.filter_by(email=email).first()
+    user = Users.query.filter_by(email=email).first() 
 
     if not user or not user.check_password(password):
         return jsonify({'message': 'Invalid credentials'}), 401
@@ -81,19 +81,28 @@ def forgot_pwd(s, mail):
     return jsonify({'message': 'Password reset email sent'}), 200
 
 def reset_pwd(token, s):
-    try:
-        email = s.loads(token, salt='reset-password', max_age=3600)
-    except:
-        return jsonify({'message': 'The reset link is invalid or has expired.'}), 400
+    if request.method == 'GET':
+        return jsonify({'message': 'Success verify email reset password.'}), 200
 
-    data = request.get_json()
-    user = Users.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
+    elif request.method == 'POST':
+        # Coba memuat email dari token
+        try:
+            email = s.loads(token, salt='reset-password', max_age=3600)
+        except:
+            return jsonify({'message': 'The reset link is invalid or has expired.'}), 400
 
-    user.set_password(data.get('new_password'))
-    db.session.commit()
-    return jsonify({'message': 'Password has been reset successfully'}), 200
+        data = request.get_json()
+        user = Users.query.filter_by(email=email).first()
+        
+        # Cek jika user ditemukan
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        # Setel ulang password
+        user.set_password(data.get('new_password'))
+        db.session.commit()
+        return jsonify({'message': 'Password has been reset successfully'}), 200
+
 
 def logout_acc():
     session.pop('logged_in', None)

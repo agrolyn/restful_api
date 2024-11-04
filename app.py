@@ -64,7 +64,7 @@ def index():
 def register():
     return auth_controller.register_acc(s, mail)
 
-@app.route('/confirm/<token>')
+@app.route('/confirm/<token>', methods=['GET'])
 def confirm_email(token):
     return auth_controller.confirm_email_acc(token, s)
 
@@ -76,7 +76,7 @@ def login():
 def forgot_password():
     return auth_controller.forgot_pwd(s, mail)
 
-@app.route('/reset_password/<token>', methods=['POST'])
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     return auth_controller.reset_pwd(token, s)
 
