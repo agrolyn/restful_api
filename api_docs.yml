@@ -89,6 +89,15 @@ paths:
               access_token:
                 type: string
                 description: "JWT token for authenticated requests"
+              id:
+                type: integer
+                description: "User's unique ID"
+              email:
+                type: string
+                description: "User's email address"
+              name:
+                type: string
+                description: "User's name"
         401:
           description: "Invalid credentials"
         403:
