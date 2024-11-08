@@ -17,7 +17,7 @@ def register_acc(s, mail):
         email=email,
         address=data.get('address'),
         phone_number=data.get('phone_number'),
-        img_profile='https://agrolyn.online/static/uploads/default.png',
+        img_profile='https://ui-avatars.com/api/?name=' + data.get('name') + '&background=random',
         roles_id=data.get('roles_id'),
         is_verified=False
     )
