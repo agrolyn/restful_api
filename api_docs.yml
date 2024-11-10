@@ -392,7 +392,7 @@ paths:
       tags:
         - "profile"
       summary: "Edit user profile"
-      description: "Endpoint for updating user's profile information. Only 'name', 'address', 'phone_number', and 'img_profile' fields can be modified."
+      description: "Endpoint for updating user's profile information."
       consumes:
         - application/json
       parameters:
