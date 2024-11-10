@@ -13,6 +13,33 @@ tags:
     description: "Endpoints related to recipes"
 
 paths:
+  /refresh-token:
+    post:
+      tags:
+        - "auth"
+      summary: "Obtain a new access token using refresh token"
+      description: "Use this endpoint to get a new access token without logging in again. Requires a valid refresh token in the Authorization header."
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          description: "Bearer token format with the refresh token (e.g., 'Bearer <refresh_token>')"
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Successfully obtained new access token"
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
+                description: "New JWT access token for authenticated requests"
+        401:
+          description: "Invalid or expired refresh token"
+        422:
+          description: "Missing or invalid Authorization header format"
+
   /register:
     post:
       tags:
@@ -66,7 +93,7 @@ paths:
     post:
       tags:
         - "auth"
-      summary: "Login user and obtain JWT token"
+      summary: "Login user and obtain JWT tokens (access and refresh)"
       consumes:
         - application/json
       parameters:
@@ -78,17 +105,22 @@ paths:
             properties:
               email:
                 type: string
+                description: "User's email address"
               password:
                 type: string
+                description: "User's password"
       responses:
         200:
-          description: "Logged in successfully and JWT token provided"
+          description: "Logged in successfully with access and refresh tokens provided"
           schema:
             type: object
             properties:
               access_token:
                 type: string
-                description: "JWT token for authenticated requests"
+                description: "JWT access token for authenticated requests"
+              refresh_token:
+                type: string
+                description: "JWT refresh token for obtaining new access tokens"
               id:
                 type: integer
                 description: "User's unique ID"
@@ -98,6 +130,18 @@ paths:
               name:
                 type: string
                 description: "User's name"
+              address:
+                type: string
+                description: "User's address"
+              phone_number:
+                type: string
+                description: "User's phone number"
+              img_profile:
+                type: string
+                description: "URL to user's profile image"
+              roles_id:
+                type: integer
+                description: "User's role ID"
         401:
           description: "Invalid credentials"
         403:

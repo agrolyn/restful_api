@@ -11,3 +11,5 @@ flasgger
 Flask-JWT-Extended 
 Flask-Mail
 requests
+tensorflow
+Pillow

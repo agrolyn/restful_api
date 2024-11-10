@@ -2,9 +2,8 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller
-from controllers import recipes_controller
-from controllers import auth_controller
+from controllers import articles_controller, recipes_controller, auth_controller
+# from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
 from flasgger import Swagger
@@ -17,6 +16,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)
 app.config["JWT_SECRET_KEY"] = os.urandom(32)  # JWT secret key
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)
 
 # Database configuration
 DB_USERNAME = os.getenv('DB_USERNAME')
@@ -84,6 +84,11 @@ def reset_password(token):
 def logout():
     return auth_controller.logout_acc()
 
+@app.route('/refresh-token', methods=['POST'])
+@jwt_required(refresh=True)  # Memastikan hanya refresh token yang bisa mengakses route ini
+def refresh_access_token():
+    return auth_controller.refresh_token()
+
 ######################################################################
 ######################## Articles Endpoint ###########################
 ######################################################################
@@ -111,6 +116,14 @@ def all_recipes():
 @jwt_required()
 def detail_recipe(id):
     return recipes_controller.get_detail_recipes(id)
+
+######################################################################
+#################### AI Prediction Endpoint ##########################
+######################################################################
+
+# @app.route('/predict', methods=['POST'])
+# def predict():
+#     return detection_controller.predict()
 
 if __name__ == "__main__":
     app.run(debug=True)
