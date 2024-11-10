@@ -5,18 +5,20 @@ info:
   description: "API Documentation For AGROLYN Apps."
 
 tags:
-  - name: "auth"
+  - name: "authentication"
     description: "Endpoints related to authentication and authorization"
   - name: "article"
     description: "Endpoints related to articles"
   - name: "recipe"
     description: "Endpoints related to recipes"
+  - name: "profile"
+    description: "Endpoints related to user profile"
 
 paths:
   /refresh-token:
     post:
       tags:
-        - "auth"
+        - "authentication"
       summary: "Obtain a new access token using refresh token"
       description: "Use this endpoint to get a new access token without logging in again. Requires a valid refresh token in the Authorization header."
       parameters:
@@ -43,7 +45,7 @@ paths:
   /register:
     post:
       tags:
-        - "auth"
+        - "authentication"
       summary: "Register a new user"
       consumes:
         - application/json
@@ -75,7 +77,7 @@ paths:
   /confirm/{token}:
     get:
       tags:
-        - "auth"
+        - "authentication"
       summary: "Confirm user's email"
       parameters:
         - name: token
@@ -92,7 +94,7 @@ paths:
   /login:
     post:
       tags:
-        - "auth"
+        - "authentication"
       summary: "Login user and obtain JWT tokens (access and refresh)"
       consumes:
         - application/json
@@ -150,7 +152,7 @@ paths:
   /forgot_password:
     post:
       tags:
-        - "auth"
+        - "authentication"
       summary: "Request password reset link"
       consumes:
         - application/json
@@ -172,7 +174,7 @@ paths:
   /reset_password/{token}:
     get:
       tags:
-        - "auth"
+        - "authentication"
       summary: "Confirm user's email reset password"
       parameters:
         - name: token
@@ -187,7 +189,7 @@ paths:
           description: "Invalid or expired confirmation link"
     post:
       tags:
-        - "auth"
+        - "authentication"
       summary: "Reset user password"
       consumes:
         - application/json
@@ -216,14 +218,14 @@ paths:
   /logout:
     post:
       tags:
-        - "auth"
+        - "authentication"
       summary: "Logout user and invalidate session"
       parameters:
         - name: Authorization
           in: header
           required: true
           type: string
-          description: "JWT token"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
       responses:
         200:
           description: "Logged out successfully"
@@ -238,7 +240,7 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
       responses:
         200:
           description: "A list of articles"
@@ -277,7 +279,7 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
         - name: id
           in: path
           required: true
@@ -321,7 +323,7 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
       responses:
         200:
           description: "A list of recipes"
@@ -356,7 +358,7 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
         - name: id
           in: path
           required: true
@@ -385,3 +387,41 @@ paths:
                 description: "The instructions for preparing the recipe"
         404:
           description: "Recipe not found"
+  /edit-profile:
+    put:
+      tags:
+        - "profile"
+      summary: "Edit user profile"
+      description: "Endpoint for updating user's profile information. Only 'name', 'address', 'phone_number', and 'img_profile' fields can be modified."
+      consumes:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+        - in: body
+          name: profile
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: "User's updated name"
+              address:
+                type: string
+                description: "User's updated address"
+              phone_number:
+                type: string
+                description: "User's updated phone number"
+      responses:
+        200:
+          description: "Profile updated successfully"
+        400:
+          description: "No valid fields to update"
+        404:
+          description: "User not found"
+        401:
+          description: "Unauthorized access"

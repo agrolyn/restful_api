@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -116,6 +116,15 @@ def all_recipes():
 @jwt_required()
 def detail_recipe(id):
     return recipes_controller.get_detail_recipes(id)
+
+######################################################################
+######################## Profile Endpoint ############################
+######################################################################
+
+@app.route("/edit-profile", methods=["PUT"])
+@jwt_required()
+def edit_profile():
+    return profile_controller.edit_profile()
 
 ######################################################################
 #################### AI Prediction Endpoint ##########################
