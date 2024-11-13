@@ -207,9 +207,11 @@ class Questions(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.Text, nullable=False)
+    img_q = db.Column(db.String(255), nullable=False)
     like_num = db.Column(db.Integer, default=0)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     plant_types_id = db.Column(db.Integer, db.ForeignKey('plant_types.id'), nullable=False)
+    released_date = db.Column(db.DateTime, nullable=False)
 
     # Relationship
     disccus = relationship('Disccus', backref='questions', lazy=True)
@@ -220,7 +222,9 @@ class Questions(db.Model):
             'question': self.question,
             'like_num': self.like_num,
             'users_id': self.users_id,
+            'img_q': self.img_q,
             'plant_types_id': self.plant_types_id,
+            'released_date': self.released_date
         }
 
     def __repr__(self):
@@ -235,6 +239,7 @@ class Disccus(db.Model):
     plant_types_id = db.Column(db.Integer, db.ForeignKey('plant_types.id'), nullable=False)
     like_num = db.Column(db.Integer, default=0, nullable=False)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    released_date = db.Column(db.DateTime, nullable=False)
 
     def to_dict(self):
         return {
@@ -244,6 +249,7 @@ class Disccus(db.Model):
             'plant_types_id': self.plant_types_id,
             'like_num': self.like_num,
             'users_id': self.users_id,
+            'released_date': self.released_date
         }
 
     def __repr__(self):
