@@ -151,5 +151,9 @@ def get_detail_question(id):
 ######################## disccus Endpoint ###########################
 ######################################################################
 
+@app.route('/disccus/<int:questions_id>', methods=['GET'])
+def get_disccus_route(questions_id):
+    return disccus_controller.get_disccus_by_question(questions_id)
+
 if __name__ == "__main__":
     app.run(debug=True)

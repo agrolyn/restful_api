@@ -14,7 +14,7 @@ tags:
   - name: "profile"
     description: "Endpoints related to user profile"
   - name: "question"
-    description: "Endpoints related to questions"
+    description: "Endpoints related to question"
 
 paths:
   /refresh-token:
