@@ -18,7 +18,7 @@ def register_acc(s, mail):
     user = Users.query.filter_by(email=email).first()
 
     if user:
-        return jsonify({'message': 'Email already exists'}), 400
+        return jsonify({'message': 'Email sudah terdaftar'}), 400
 
     new_user = Users(
         name=data.get('name'),
@@ -73,17 +73,17 @@ def register_acc(s, mail):
     msg.html = html
     mail.send(msg)
 
-    return jsonify({'message': 'User registered. Check email to confirm account.'}), 201
+    return jsonify({'message': 'Pengguna terdaftar. silahkan cek email untuk mengonfirmasi akun'}), 201
 
 def confirm_email_acc(token, s):
     try:
         email = s.loads(token, salt='email-confirm', max_age=3600)
     except:
-        return jsonify({'message': 'The confirmation link is invalid or has expired.'}), 400
+        return jsonify({'message': 'Tautan konfirmasi tidak valid atau telah kedaluwarsa.'}), 400
 
     user = Users.query.filter_by(email=email).first()
     if user.is_verified:
-        return jsonify({'message': 'Account already confirmed.'}), 400
+        return jsonify({'message': 'Akun berhasil dikonfirmasi.'}), 400
     else:
         user.is_verified = True
         db.session.commit()
@@ -96,10 +96,10 @@ def login_acc():
     user = Users.query.filter_by(email=email).first()
 
     if not user or not user.check_password(password):
-        return jsonify({'message': 'Invalid credentials'}), 401
+        return jsonify({'message': 'Kredensial tidak valid'}), 401
 
     if not user.is_verified:
-        return jsonify({'message': 'Email not verified'}), 403
+        return jsonify({'message': 'Email tidak terverifikasi'}), 403
 
     # Buat access token dan refresh token
     access_token = create_access_token(identity={
@@ -176,32 +176,32 @@ def forgot_pwd(s, mail):
     msg.html = html
     mail.send(msg)
 
-    return jsonify({'message': 'Password reset email sent'}), 200
+    return jsonify({'message': 'Email pengaturan ulang kata sandi terkirim.'}), 200
 
 def reset_pwd(token, s):
     if request.method == 'GET':
-        return jsonify({'message': 'Success verify email reset password.'}), 200
+        return jsonify({'message': 'Berhasil memverifikasi email setel ulang kata sandi.'}), 200
 
     elif request.method == 'POST':
         # Coba memuat email dari token
         try:
             email = s.loads(token, salt='reset-password', max_age=3600)
         except:
-            return jsonify({'message': 'The reset link is invalid or has expired.'}), 400
+            return jsonify({'message': 'Tautan setel ulang tidak valid atau telah kedaluwarsa.'}), 400
 
         data = request.get_json()
         user = Users.query.filter_by(email=email).first()
         
         # Cek jika user ditemukan
         if not user:
-            return jsonify({'message': 'User not found'}), 404
+            return jsonify({'message': 'Pengguna tidak ditemukan'}), 404
 
         # Setel ulang password
         user.set_password(data.get('new_password'))
         db.session.commit()
-        return jsonify({'message': 'Password has been reset successfully'}), 200
+        return jsonify({'message': 'Kata sandi telah berhasil diatur ulang'}), 200
 
 
 def logout_acc():
     session.pop('logged_in', None)
-    return jsonify({'message': 'Logged out successfully'}), 200
+    return jsonify({'message': 'Kata sandi telah berhasil diatur ulang'}), 200

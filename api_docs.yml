@@ -13,6 +13,8 @@ tags:
     description: "Endpoints related to recipes"
   - name: "profile"
     description: "Endpoints related to user profile"
+  - name: "question"
+    description: "Endpoints related to questions"
 
 paths:
   /refresh-token:
@@ -425,3 +427,155 @@ paths:
           description: "User not found"
         401:
           description: "Unauthorized access"
+
+      paths:
+  /questions:
+    get:
+      tags:
+        - "question"
+      summary: "Get all questions"
+      description: "Retrieve a list of all questions."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+      responses:
+        200:
+          description: "A list of questions"
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "The question ID"
+                question:
+                  type: string
+                  description: "The question content"
+                like_num:
+                  type: integer
+                  description: "Number of likes on the question"
+                users_id:
+                  type: integer
+                  description: "ID of the user who asked the question"
+                plant_types_id:
+                  type: integer
+                  description: "ID of the plant type associated with the question"
+                released_date:
+                  type: string
+                  format: date
+                  description: "The date the question was released"
+                img_q:
+                  type: string
+                  description: "URL of the image associated with the question"
+
+  /questions/{id}:
+    get:
+      tags:
+        - "question"
+      summary: "Get question detail"
+      description: "Retrieve details of a specific question by its ID."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: "The ID of the question to retrieve"
+      responses:
+        200:
+          description: "Question details"
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: "The question ID"
+              question:
+                type: string
+                description: "The question content"
+              like_num:
+                type: integer
+                description: "Number of likes on the question"
+              users_id:
+                type: integer
+                description: "ID of the user who asked the question"
+              plant_types_id:
+                type: integer
+                description: "ID of the plant type associated with the question"
+              released_date:
+                type: string
+                format: date
+                description: "The date the question was released"
+              img_q:
+                type: string
+                description: "URL of the image associated with the question"
+        404:
+          description: "Question not found"
+
+    post:
+      tags:
+        - "question"
+      summary: "Create a new question"
+      description: "Add a new question to the system."
+      consumes:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+        - in: body
+          name: question
+          required: true
+          schema:
+            type: object
+            properties:
+              question:
+                type: string
+                description: "The content of the question"
+              users_id:
+                type: integer
+                description: "ID of the user asking the question"
+              plant_types_id:
+                type: integer
+                description: "ID of the plant type associated with the question"
+              img_q:
+                type: string
+                description: "URL of the image associated with the question"
+      responses:
+        201:
+          description: "Question created successfully"
+        400:
+          description: "Invalid input data"
+
+  /questions/{id}/like:
+    put:
+      tags:
+        - "question"
+      summary: "Like a question"
+      description: "Increase the like count for a specific question."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: "The ID of the question to like"
+      responses:
+        200:
+          description: "Like added successfully"
+        404:
+          description: "Question not found"

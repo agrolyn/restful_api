@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller
+from controllers import articles_controller, disccus_controller, recipes_controller, auth_controller, profile_controller,questions_controller,disccus_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -133,6 +133,23 @@ def edit_profile():
 # @app.route('/predict', methods=['POST'])
 # def predict():
 #     return detection_controller.predict()
+
+######################################################################
+######################## Question Endpoint ###########################
+######################################################################
+@app.route("/questions", methods=["GET"])
+@jwt_required()
+def get_all_question():
+    return questions_controller.get_all_question()
+
+@app.route("/questions/<int:id>/", methods=["GET"])
+@jwt_required()
+def get_detail_question(id):
+    return questions_controller.get_detail_question(id)
+
+######################################################################
+######################## disccus Endpoint ###########################
+######################################################################
 
 if __name__ == "__main__":
     app.run(debug=True)
