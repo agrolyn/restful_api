@@ -206,7 +206,8 @@ class Products(db.Model):
 class Questions(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
-    question = db.Column(db.Text, nullable=False)
+    title_q = db.Column(db.String(70), nullable=False)
+    description = db.Column(db.Text, nullable=False)
     img_q = db.Column(db.String(255), nullable=False)
     like_num = db.Column(db.Integer, default=0)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

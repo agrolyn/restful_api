@@ -35,7 +35,7 @@ def delete_image(img_name):
         response = requests.get(url)
         if response.status_code == 201:
             return jsonify({
-                "message": "Gambar berhasil dihapus dari Agrolyn",
+                "message": "Gambar berhasil dihapus dari Agrolyn.",
                 "data": response.json()
             }), 201
         elif response.status_code == 404:
@@ -45,7 +45,7 @@ def delete_image(img_name):
             }), 404
         else:
             return jsonify({
-                "message": "Gagal menghapus gambar",
+                "message": "Gagal menghapus gambar.",
                 "error": response.json()
             }), response.status_code
     except requests.exceptions.RequestException as e:
@@ -70,7 +70,7 @@ def edit_profile():
 
     # Memeriksa apakah ada field yang ingin di-update
     if not update_fields:
-        return jsonify({"message": "Tidak ada bidang valid untuk diperbarui."}), 400
+        return jsonify({"message": "Tidak ada bidang yang valid untuk diperbarui."}), 400
 
     # Mengambil user berdasarkan user_id
     user = Users.query.get(user_id)
@@ -84,4 +84,4 @@ def edit_profile():
     # Menyimpan perubahan ke database
     db.session.commit()
 
-    return jsonify({"message": "Profil berhasil diperbarui"}), 200
+    return jsonify({"message": "Profil berhasil diperbarui."}), 200
