@@ -60,31 +60,32 @@ def index():
 ###################### Users Auth Endpoint ###########################
 ######################################################################
 
-@app.route('/register', methods=['POST'])
+@app.route('/register/', methods=['POST'])
 def register():
     return auth_controller.register_acc(s, mail)
 
-@app.route('/confirm/<token>', methods=['GET'])
+@app.route('/confirm/<token>/', methods=['GET'])
 def confirm_email(token):
     return auth_controller.confirm_email_acc(token, s)
 
-@app.route('/login', methods=['POST'])
+@app.route('/login/', methods=['POST'])
 def login():
     return auth_controller.login_acc()
 
-@app.route('/forgot_password', methods=['POST'])
+@app.route('/forgot_password/', methods=['POST'])
 def forgot_password():
     return auth_controller.forgot_pwd(s, mail)
 
-@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+@app.route('/reset_password/<token>/', methods=['GET', 'POST'])
 def reset_password(token):
     return auth_controller.reset_pwd(token, s)
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout/', methods=['POST'])
+@jwt_required()
 def logout():
     return auth_controller.logout_acc()
 
-@app.route('/refresh-token', methods=['POST'])
+@app.route('/refresh-token/', methods=['POST'])
 @jwt_required(refresh=True)  # Memastikan hanya refresh token yang bisa mengakses route ini
 def refresh_access_token():
     return auth_controller.refresh_token()
@@ -121,7 +122,7 @@ def detail_recipe(id):
 ######################## Profile Endpoint ############################
 ######################################################################
 
-@app.route("/edit-profile", methods=["PUT"])
+@app.route("/edit-profile/", methods=["PUT"])
 @jwt_required()
 def edit_profile():
     return profile_controller.edit_profile()
@@ -130,19 +131,42 @@ def edit_profile():
 ####################### Community Endpoint ###########################
 ######################################################################
 
-@app.route("/community/questions", methods=["GET"])
+@app.route("/community/questions/", methods=["GET"])
+@jwt_required()
 def get_all_question():
     return community_controller.get_all_question()
 
-# @app.route("/questions/<int:id>/", methods=["GET"])
-# @jwt_required()
-# def get_detail_question(id):
-#     return community_controller.get_detail_question(id)
+@app.route("/community/questions/<int:id>/", methods=["GET"])
+@jwt_required()
+def get_detail_question(id):
+    return community_controller.get_detail_question(id)
 
-# @app.route('/disccus/<int:questions_id>', methods=['GET'])
-# @jwt_required()
-# def get_disccus_route(questions_id):
-#     return community_controller.get_disccus_by_question(questions_id)
+@app.route("/community/questions/filters/<string:filter_name>/", methods=["GET"])
+@jwt_required()
+def get_filtered_question(filter_name):
+    return community_controller.get_filtered_question(filter_name)
+
+# Like and Dislike Community Question
+@app.route("/community/questions/<int:id>/like/", methods=["POST"])
+@jwt_required()
+def inc_like_question(id):
+    return community_controller.inc_like_q(id)
+
+@app.route("/community/questions/<int:id>/dislike/", methods=["POST"])
+@jwt_required()
+def dec_like_question(id):
+    return community_controller.dec_like_q(id)
+
+# Like and Dislike Community Answer
+@app.route("/community/answer/<int:id>/like/", methods=["POST"])
+@jwt_required()
+def inc_like_answer(id):
+    return community_controller.inc_like_ans(id)
+
+@app.route("/community/answer/<int:id>/dislike/", methods=["POST"])
+@jwt_required()
+def dec_like_answer(id):
+    return community_controller.dec_like_ans(id)
 
 ######################################################################
 #################### AI Prediction Endpoint ##########################

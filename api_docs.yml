@@ -13,9 +13,11 @@ tags:
     description: "Endpoints related to recipes"
   - name: "profile"
     description: "Endpoints related to user profile"
+  - name: "community"
+    description: "Endpoints related to community"
 
 paths:
-  /refresh-token:
+  /refresh-token/:
     post:
       tags:
         - "authentication"
@@ -42,7 +44,7 @@ paths:
         422:
           description: "Missing or invalid Authorization header format"
 
-  /register:
+  /register/:
     post:
       tags:
         - "authentication"
@@ -74,7 +76,7 @@ paths:
         400:
           description: "Email already exists"
 
-  /confirm/{token}:
+  /confirm/{token}/:
     get:
       tags:
         - "authentication"
@@ -91,7 +93,7 @@ paths:
         400:
           description: "Invalid or expired confirmation link"
 
-  /login:
+  /login/:
     post:
       tags:
         - "authentication"
@@ -149,7 +151,7 @@ paths:
         403:
           description: "Email not verified"
 
-  /forgot_password:
+  /forgot_password/:
     post:
       tags:
         - "authentication"
@@ -171,7 +173,7 @@ paths:
         404:
           description: "Email not found"
 
-  /reset_password/{token}:
+  /reset_password/{token}/:
     get:
       tags:
         - "authentication"
@@ -215,7 +217,7 @@ paths:
         404:
           description: "User not found"
 
-  /logout:
+  /logout/:
     post:
       tags:
         - "authentication"
@@ -387,7 +389,7 @@ paths:
                 description: "The instructions for preparing the recipe"
         404:
           description: "Recipe not found"
-  /edit-profile:
+  /edit-profile/:
     put:
       tags:
         - "profile"
@@ -425,3 +427,483 @@ paths:
           description: "User not found"
         401:
           description: "Unauthorized access"
+  /community/questions/:
+    get:
+      tags:
+        - "community"
+      summary: "Get all community questions"
+      description: "Retrieve all questions from the community, including user details and metadata. Requires a valid JWT token."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+      responses:
+        200:
+          description: "A list of community questions"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Status message"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "The ID of the question"
+                        username:
+                          type: string
+                          description: "The name of the user who posted the question"
+                        user_profile:
+                          type: string
+                          description: "URL of the user's profile picture"
+                        question_type:
+                          type: string
+                          description: "The type of the plant related to the question"
+                        title_question:
+                          type: string
+                          description: "The title of the question"
+                        like_num:
+                          type: integer
+                          description: "Number of likes the question has received"
+                        question_thumbnail:
+                          type: string
+                          description: "URL of the question's thumbnail image"
+                        number_of_answer:
+                          type: integer
+                          description: "Number of answers for the question"
+                        released_date:
+                          type: string
+                          format: date-time
+                          description: "The release date of the question"
+        401:
+          description: "Unauthorized - Invalid or missing JWT token"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message indicating authorization failure"
+        500:
+          description: "An error occurred while fetching questions"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message"
+                  error:
+                    type: string
+                    description: "Details about the error"
+  /community/questions/{id}/:
+    get:
+      tags:
+        - "community"
+      summary: "Get details of a specific question"
+      description: "Retrieve detailed information about a specific community question and its answers. Requires a valid JWT token."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "The ID of the question to retrieve"
+      responses:
+        200:
+          description: "Details of the question and its answers"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Status message"
+                  data:
+                    type: object
+                    properties:
+                      question_detail:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: "The ID of the question"
+                          username:
+                            type: string
+                            description: "The name of the user who posted the question"
+                          user_profile:
+                            type: string
+                            description: "URL of the user's profile picture"
+                          question_type:
+                            type: string
+                            description: "The type of the plant related to the question"
+                          title_question:
+                            type: string
+                            description: "The title of the question"
+                          description:
+                            type: string
+                            description: "The content of the question"
+                          like_num:
+                            type: integer
+                            description: "Number of likes the question has received"
+                          question_thumbnail:
+                            type: string
+                            description: "URL of the question's thumbnail image"
+                          number_of_answer:
+                            type: integer
+                            description: "Number of answers for the question"
+                          released_date:
+                            type: string
+                            format: date-time
+                            description: "The release date of the question"
+                      list_answer:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: "The ID of the answer"
+                            username:
+                              type: string
+                              description: "The name of the user who posted the answer"
+                            user_profile:
+                              type: string
+                              description: "URL of the user's profile picture"
+                            answer:
+                              type: string
+                              description: "The content of the answer"
+                            like_num:
+                              type: integer
+                              description: "Number of likes the answer has received"
+                            released_date:
+                              type: string
+                              format: date-time
+                              description: "The release date of the answer"
+        401:
+          description: "Unauthorized - Invalid or missing JWT token"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message indicating authorization failure"
+        404:
+          description: "The question with the specified ID was not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message"
+
+  /community/questions/filters/{filter_name}/:
+    get:
+      tags:
+        - "community"
+      summary: "Get filtered community questions"
+      description: >
+        Retrieve community questions based on specific filters. 
+        Supports filters such as:
+        - `"umum"`: General questions
+        - `"padi"`: Rice-related questions
+        - `"jagung"`: Corn-related questions
+        - `"answerme"`: Questions asked by the logged-in user.
+        Requires a valid JWT token.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+        - name: filter_name
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - umum
+              - padi
+              - jagung
+              - answerme
+          description: >
+            The name of the filter to apply:
+            - `umum`: General questions
+            - `padi`: Rice-related questions
+            - `jagung`: Corn-related questions
+            - `answerme`: Questions asked by the logged-in user.
+      responses:
+        200:
+          description: "Filtered community questions"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Status message"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "The ID of the question"
+                        username:
+                          type: string
+                          description: "The name of the user who posted the question"
+                        user_profile:
+                          type: string
+                          description: "URL of the user's profile picture"
+                        question_type:
+                          type: string
+                          description: "The type of the plant related to the question"
+                        title_question:
+                          type: string
+                          description: "The title of the question"
+                        like_num:
+                          type: integer
+                          description: "Number of likes the question has received"
+                        question_thumbnail:
+                          type: string
+                          description: "URL of the question's thumbnail image"
+                        number_of_answer:
+                          type: integer
+                          description: "Number of answers for the question"
+                        released_date:
+                          type: string
+                          format: date-time
+                          description: "The release date of the question"
+        401:
+          description: "Unauthorized - Invalid or missing JWT token"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message indicating authorization failure"
+        500:
+          description: "An error occurred while fetching filtered questions"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message"
+                  error:
+                    type: string
+                    description: "Details about the error"
+
+  /community/questions/{id}/like/:
+    post:
+      tags:
+        - "community"
+      summary: "Sukai (like) pertanyaan komunitas"
+      description: "Menambahkan jumlah like pada pertanyaan komunitas berdasarkan ID pertanyaan."
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: "ID dari pertanyaan komunitas yang ingin disukai (like)."
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token untuk otorisasi (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "Berhasil menyukai pertanyaan komunitas."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses menyukai (like) pertanyaan komunitas."
+        400:
+          description: "Pertanyaan tidak ditemukan."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal menyukai (like) pertanyaan komunitas."
+        500:
+          description: "Kesalahan server internal."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Error terjadi"
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /community/questions/{id}/dislike/:
+    post:
+      tags:
+        - "community"
+      summary: "Tidak menyukai (dislike) pertanyaan komunitas"
+      description: "Mengurangi jumlah like pada pertanyaan komunitas berdasarkan ID pertanyaan."
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: "ID dari pertanyaan komunitas yang ingin tidak disukai (dislike)."
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token untuk otorisasi (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "Berhasil tidak menyukai pertanyaan komunitas."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses tidak menyukai (dislike) pertanyaan komunitas."
+        400:
+          description: "Pertanyaan tidak ditemukan atau like bernilai 0."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal tidak menyukai (dislike) pertanyaan komunitas."
+        500:
+          description: "Kesalahan server internal."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Error terjadi"
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /community/answer/{id}/like/:
+    post:
+      tags:
+        - "community"
+      summary: "Sukai (like) jawaban komunitas"
+      description: "Menambahkan jumlah like pada jawaban komunitas berdasarkan ID jawaban."
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: "ID dari jawaban komunitas yang ingin disukai (like)."
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token untuk otorisasi (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "Berhasil menyukai jawaban komunitas."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses menyukai (like) jawaban dari pertanyaan komunitas."
+        400:
+          description: "Jawaban tidak ditemukan."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal menyukai (like) jawaban dari pertanyaan komunitas."
+        500:
+          description: "Kesalahan server internal."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Error terjadi"
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /community/answer/{id}/dislike/:
+    post:
+      tags:
+        - "community"
+      summary: "Tidak menyukai (dislike) jawaban komunitas"
+      description: "Mengurangi jumlah like pada jawaban komunitas berdasarkan ID jawaban."
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: "ID dari jawaban komunitas yang ingin tidak disukai (dislike)."
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token untuk otorisasi (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "Berhasil tidak menyukai jawaban komunitas."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses tidak menyukai (dislike) jawaban dari pertanyaan komunitas."
+        400:
+          description: "Jawaban tidak ditemukan atau like bernilai 0."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal tidak menyukai (dislike) jawaban dari pertanyaan komunitas."
+        500:
+          description: "Kesalahan server internal."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Error terjadi"
+              error:
+                type: string
+                example: "Database connection failed."
+
