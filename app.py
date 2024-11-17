@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -125,6 +125,24 @@ def detail_recipe(id):
 @jwt_required()
 def edit_profile():
     return profile_controller.edit_profile()
+
+######################################################################
+####################### Community Endpoint ###########################
+######################################################################
+
+@app.route("/community/questions", methods=["GET"])
+def get_all_question():
+    return community_controller.get_all_question()
+
+# @app.route("/questions/<int:id>/", methods=["GET"])
+# @jwt_required()
+# def get_detail_question(id):
+#     return community_controller.get_detail_question(id)
+
+# @app.route('/disccus/<int:questions_id>', methods=['GET'])
+# @jwt_required()
+# def get_disccus_route(questions_id):
+#     return community_controller.get_disccus_by_question(questions_id)
 
 ######################################################################
 #################### AI Prediction Endpoint ##########################

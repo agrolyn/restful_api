@@ -18,12 +18,12 @@ def uploads_image(img):
             # Cek status response
             if response.status_code == 201:
                 return jsonify({
-                    "message": "Image uploaded successfully to Agrolyn",
+                    "message": "Gambar berhasil diunggah ke Agrolyn.",
                     "data": response.json()
                 }), 201
             else:
                 return jsonify({
-                    "message": "Failed to upload image",
+                    "message": "Gagal mengunggah gambar.",
                 }), response.status_code
         except requests.exceptions.RequestException as e:
             return jsonify({"error": str(e)}), 500
@@ -35,17 +35,17 @@ def delete_image(img_name):
         response = requests.get(url)
         if response.status_code == 201:
             return jsonify({
-                "message": "Image deleted successfully from Agrolyn",
+                "message": "Gambar berhasil dihapus dari Agrolyn.",
                 "data": response.json()
             }), 201
         elif response.status_code == 404:
             return jsonify({
-                "message": "Failed to delete image. Image not found.",
+                "message": "Gagal menghapus gambar. Gambar tidak ditemukan.",
                 "error": response.json()
             }), 404
         else:
             return jsonify({
-                "message": "Failed to delete image",
+                "message": "Gagal menghapus gambar.",
                 "error": response.json()
             }), response.status_code
     except requests.exceptions.RequestException as e:
@@ -70,12 +70,12 @@ def edit_profile():
 
     # Memeriksa apakah ada field yang ingin di-update
     if not update_fields:
-        return jsonify({"message": "No valid fields to update"}), 400
+        return jsonify({"message": "Tidak ada bidang yang valid untuk diperbarui."}), 400
 
     # Mengambil user berdasarkan user_id
     user = Users.query.get(user_id)
     if user is None:
-        return jsonify({"message": "User not found"}), 404
+        return jsonify({"message": "Pengguna tidak ditemukan."}), 404
 
     # Melakukan update pada field yang diberikan
     for key, value in update_fields.items():
@@ -84,4 +84,4 @@ def edit_profile():
     # Menyimpan perubahan ke database
     db.session.commit()
 
-    return jsonify({"message": "Profile updated successfully"}), 200
+    return jsonify({"message": "Profil berhasil diperbarui."}), 200

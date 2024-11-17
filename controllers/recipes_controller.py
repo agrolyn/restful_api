@@ -21,5 +21,5 @@ def get_detail_recipes(id_recipe):
     if recipe:
         return jsonify({'status': 'success', 'data': recipe.to_dict()}), 200
     else:
-        return jsonify({'status': 'error', 'message': 'Artikel tidak ditemukan'}), 404
+        return jsonify({'status': 'error', 'message': 'Resep tidak ditemukan'}), 404
 
