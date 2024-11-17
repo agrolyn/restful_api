@@ -176,26 +176,5 @@ def dec_like_answer(id):
 # def predict():
 #     return detection_controller.predict()
 
-######################################################################
-######################## Question Endpoint ###########################
-######################################################################
-@app.route("/questions", methods=["GET"])
-@jwt_required()
-def get_all_question():
-    return questions_controller.get_all_question()
-
-@app.route("/questions/<int:id>/", methods=["GET"])
-@jwt_required()
-def get_detail_question(id):
-    return questions_controller.get_detail_question(id)
-
-######################################################################
-######################## disccus Endpoint ###########################
-######################################################################
-
-@app.route('/disccus/<int:questions_id>', methods=['GET'])
-def get_disccus_route(questions_id):
-    return disccus_controller.get_disccus_by_question(questions_id)
-
 if __name__ == "__main__":
     app.run(debug=True)
