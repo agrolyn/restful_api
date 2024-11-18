@@ -168,6 +168,38 @@ def inc_like_answer(id):
 def dec_like_answer(id):
     return community_controller.dec_like_ans(id)
 
+# CRUD Community Question
+@app.route("/community/question/new/", methods=["POST"])
+@jwt_required()
+def new_question():
+    return community_controller.new_q()
+
+@app.route("/community/question/update/<int:question_id>/", methods=["PUT"])
+@jwt_required()
+def upd_question(question_id):
+    return community_controller.update_q(question_id)
+
+@app.route("/community/question/delete/<int:question_id>/", methods=["DELETE"])
+@jwt_required()
+def del_question(question_id):
+    return community_controller.delete_q(question_id)
+
+# CRUD Community Answer by Question Id
+@app.route("/community/answer/new/<question_id>/", methods=["POST"])
+@jwt_required()
+def new_ans(question_id):
+    return community_controller.new_ans(question_id)
+
+@app.route("/community/answer/update/<int:answer_id>/", methods=["PUT"])
+@jwt_required()
+def upd_ans(answer_id):
+    return community_controller.update_ans(answer_id)
+
+@app.route("/community/answer/delete/<int:answer_id>/", methods=["DELETE"])
+@jwt_required()
+def del_ans(answer_id):
+    return community_controller.delete_ans(answer_id)
+
 ######################################################################
 #################### AI Prediction Endpoint ##########################
 ######################################################################

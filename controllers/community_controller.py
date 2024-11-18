@@ -1,7 +1,9 @@
 from datetime import *
-from flask import jsonify
+from flask import jsonify, request
 from flask_jwt_extended import get_jwt_identity
 from models.models import *
+from utils import image_uploaded
+from datetime import datetime
 
 from flask import jsonify
 
@@ -207,10 +209,118 @@ def dec_like_ans(id):
     except Exception as e:
         return jsonify({"message": "Error terjadi", "error": str(e)}), 500
 
-######################################################################
-######################## Question Endpoint ###########################
-######################################################################
+#######################################################################################
+######################## Question Answer Community Endpoint ###########################
+#######################################################################################
 
 # Question Endpoint (Create, Edit dan Delete)
+def new_q():
+    user_identity = get_jwt_identity()
+    datenow = datetime.now()
+    
+    users_id = user_identity.get("id")
+    title_q = request.form["title_q"]
+    description = request.form["description"]
+    plant_types_id = request.form["plant_types_id"]
+    img_q = request.files.get('img_q')
+    like_num = 0
+    released_date = datenow.strftime('%Y-%m-%d %H:%M:%S')  # Format: '2024-11-18 12:30:45'
+
+    if not img_q:
+        return jsonify({
+            "message": "Gagal menambahkan data. Gambar tidak ditemukan."
+        }), 400
+
+    # Upload image menggunakan fungsi utility
+    filename_img = image_uploaded.uploads_image(img_q)
+
+    if not filename_img:
+        return jsonify({
+            "message": "Gagal mengunggah gambar."
+        }), 500
+
+    # Jika upload berhasil, lanjutkan menambahkan ke database
+    add_q = Questions(
+        title_q=title_q,
+        description=description,
+        like_num=like_num,
+        users_id=users_id,
+        plant_types_id=plant_types_id,
+        released_date=released_date,
+        img_q=f"https://agrolyn.online/static/uploads/{filename_img}"
+    )
+
+    db.session.add(add_q)
+    db.session.commit()
+    
+    return jsonify({
+        "message": "Sukses menambahkan data pertanyaan komunitas",
+        "new_question": add_q.to_dict()
+    }), 201
+
+
+def update_q(question_id):
+    # Ambil data pertanyaan berdasarkan ID
+    question = Questions.query.get(question_id)
+    if not question:
+        return jsonify({
+            "message": "Pertanyaan tidak ditemukan."
+        }), 404
+
+    # Ambil data dari form request
+    title_q = request.form.get("title_q", question.title_q)
+    description = request.form.get("description", question.description)
+    plant_types_id = request.form.get("plant_types_id", question.plant_types_id)
+    img_q = request.files.get('img_q')
+
+    # Cek apakah gambar baru diupload
+    if img_q:
+        # Upload gambar baru
+        filename_img = image_uploaded.update_image(img_q, question.img_q.split('/')[-1])
+        if not filename_img:
+            return jsonify({
+                "message": "Gagal mengunggah gambar baru."
+            }), 500
+        # Update URL gambar baru
+        question.img_q = f"https://agrolyn.online/static/uploads/{filename_img}"
+
+    # Perbarui data pertanyaan
+    question.title_q = title_q
+    question.description = description
+    question.plant_types_id = plant_types_id
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Sukses memperbarui data pertanyaan",
+        "updated_question": question.to_dict()
+    }), 200
+
+def delete_q(question_id):
+    # Ambil data pertanyaan berdasarkan ID
+    question = Questions.query.get(question_id)
+    if not question:
+        return jsonify({
+            "message": "Pertanyaan tidak ditemukan."
+        }), 404
+
+    # Hapus gambar yang terkait dengan pertanyaan
+    res = image_uploaded.delete_image(question.img_q.split('/')[-1])
+
+    # Hapus pertanyaan dari database
+    db.session.delete(question)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Sukses menghapus pertanyaan."
+    }), 200
 
 # Answer Endpoint (Create, Edit dan Delete)
+def new_ans(question_id):
+    return 0
+
+def update_ans(answer_id):
+    return 0
+
+def delete_ans(answer_id):
+    return 0

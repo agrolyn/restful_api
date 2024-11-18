@@ -215,12 +215,18 @@ class Questions(db.Model):
     released_date = db.Column(db.DateTime, nullable=False)
 
     # Relationship
-    disccus = relationship('Disccus', backref='questions', lazy=True)
+    disccus = relationship(
+        'Disccus', 
+        backref='questions', 
+        lazy=True, 
+        cascade='all, delete-orphan'
+    )
 
     def to_dict(self):
         return {
             'id': self.id,
-            'question': self.question,
+            'title_q': self.title_q,
+            'description': self.description,
             'like_num': self.like_num,
             'users_id': self.users_id,
             'img_q': self.img_q,
@@ -229,7 +235,7 @@ class Questions(db.Model):
         }
 
     def __repr__(self):
-        return f"Questions('{self.question}')"
+        return f"Questions('{self.title_q}')"
 
 
 class Disccus(db.Model):

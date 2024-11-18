@@ -727,19 +727,19 @@ paths:
     post:
       tags:
         - "community"
-      summary: "Sukai (like) pertanyaan komunitas"
-      description: "Menambahkan jumlah like pada pertanyaan komunitas berdasarkan ID pertanyaan."
+      summary: "Like community questions"
+      description: "Adds like count to community questions based on question ID."
       parameters:
         - name: id
           in: path
           required: true
           type: integer
-          description: "ID dari pertanyaan komunitas yang ingin disukai (like)."
+          description: "ID of the community question you want to like."
         - name: Authorization
           in: header
           required: true
           type: string
-          description: "JWT token untuk otorisasi (e.g., 'Bearer <access_token>')."
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
       responses:
         200:
           description: "Berhasil menyukai pertanyaan komunitas."
@@ -773,19 +773,19 @@ paths:
     post:
       tags:
         - "community"
-      summary: "Tidak menyukai (dislike) pertanyaan komunitas"
-      description: "Mengurangi jumlah like pada pertanyaan komunitas berdasarkan ID pertanyaan."
+      summary: "Dislike community questions"
+      description: "Reduced the number of likes on community questions based on the question ID."
       parameters:
         - name: id
           in: path
           required: true
           type: integer
-          description: "ID dari pertanyaan komunitas yang ingin tidak disukai (dislike)."
+          description: "ID of the community question you want to dislike."
         - name: Authorization
           in: header
           required: true
           type: string
-          description: "JWT token untuk otorisasi (e.g., 'Bearer <access_token>')."
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
       responses:
         200:
           description: "Berhasil tidak menyukai pertanyaan komunitas."
@@ -819,19 +819,19 @@ paths:
     post:
       tags:
         - "community"
-      summary: "Sukai (like) jawaban komunitas"
-      description: "Menambahkan jumlah like pada jawaban komunitas berdasarkan ID jawaban."
+      summary: "Like community answers"
+      description: "Adds like count to community answers based on answer ID."
       parameters:
         - name: id
           in: path
           required: true
           type: integer
-          description: "ID dari jawaban komunitas yang ingin disukai (like)."
+          description: "ID of the community answer you want to like."
         - name: Authorization
           in: header
           required: true
           type: string
-          description: "JWT token untuk otorisasi (e.g., 'Bearer <access_token>')."
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
       responses:
         200:
           description: "Berhasil menyukai jawaban komunitas."
@@ -865,19 +865,19 @@ paths:
     post:
       tags:
         - "community"
-      summary: "Tidak menyukai (dislike) jawaban komunitas"
-      description: "Mengurangi jumlah like pada jawaban komunitas berdasarkan ID jawaban."
+      summary: "Dislike community answers"
+      description: "Reduce the number of likes on community answers based on the answer ID."
       parameters:
         - name: id
           in: path
           required: true
           type: integer
-          description: "ID dari jawaban komunitas yang ingin tidak disukai (dislike)."
+          description: "ID of the community answer you want to dislike."
         - name: Authorization
           in: header
           required: true
           type: string
-          description: "JWT token untuk otorisasi (e.g., 'Bearer <access_token>')."
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
       responses:
         200:
           description: "Berhasil tidak menyukai jawaban komunitas."
@@ -906,4 +906,219 @@ paths:
               error:
                 type: string
                 example: "Database connection failed."
+      
+  /community/question/new/:
+    post:
+      tags:
+        - "community"
+      summary: "Add a new community question"
+      description: "Submit a new question to the community with optional image upload. Requires a valid JWT token."
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: title_q
+          in: formData
+          type: string
+          required: true
+          description: "The title of the question"
+          example: "How to grow tomatoes?"
+        - name: description
+          in: formData
+          type: string
+          required: true
+          description: "Details or description of the question"
+          example: "I need advice on growing tomatoes in a tropical climate."
+        - name: plant_types_id
+          in: formData
+          type: integer
+          required: true
+          description: "The ID of the plant type related to the question"
+          example: 1
+        - name: img_q
+          in: formData
+          type: file
+          required: false
+          description: "An optional image file for the question"
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+      responses:
+        201:
+          description: "Question successfully added"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Success message"
+              new_question:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "The ID of the newly created question"
+                  title_q:
+                    type: string
+                    description: "The title of the question"
+                  description:
+                    type: string
+                    description: "Details of the question"
+                  img_q:
+                    type: string
+                    description: "URL of the uploaded image for the question"
+                  released_date:
+                    type: string
+                    format: date-time
+                    description: "The release date of the question"
+        400:
+          description: "Bad request - Missing required data or image not found"
+        500:
+          description: "Internal server error"
+
+  /community/question/update/{question_id}/:
+    put:
+      tags:
+        - "community"
+      summary: "Update a community question"
+      description: "Update an existing question in the community. You can also update the associated image."
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: question_id
+          in: path
+          required: true
+          type: integer
+          description: "ID of the community question you want to update."
+        - name: title_q
+          in: formData
+          type: string
+          required: false
+          description: "Updated title of the question"
+          example: "How to grow tomatoes in the wild?"
+        - name: description
+          in: formData
+          type: string
+          required: false
+          description: "Updated details or description of the question"
+          example: "I need advice on growing tomatoes in harsh conditions."
+        - name: plant_types_id
+          in: formData
+          type: integer
+          required: false
+          description: "Updated ID of the plant type related to the question"
+          example: 2
+        - name: img_q
+          in: formData
+          type: file
+          required: false
+          description: "An optional updated image file for the question"
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        201:
+          description: "Successfully updated the community question."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses memperbarui data pertanyaan komunitas."
+              updated_question:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "The ID of the updated question"
+                  title_q:
+                    type: string
+                    description: "The updated title of the question"
+                  description:
+                    type: string
+                    description: "Updated details of the question"
+                  img_q:
+                    type: string
+                    description: "URL of the updated image for the question"
+                  released_date:
+                    type: string
+                    format: date-time
+                    description: "The release date of the question"
+        400:
+          description: "Bad request - Missing required data or invalid input"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal memperbarui pertanyaan. Data tidak valid atau gambar tidak ditemukan."
+        404:
+          description: "Question not found"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Pertanyaan tidak ditemukan."
+        500:
+          description: "Internal server error"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan server internal."
+              error:
+                type: string
+                example: "Error: Database connection failed."
+  
+  /community/question/delete/{question_id}/:
+    delete:
+      tags:
+        - "community"
+      summary: "Delete a community question"
+      description: "Delete a community question by its ID, along with its associated image."
+      parameters:
+        - name: question_id
+          in: path
+          required: true
+          type: integer
+          description: "ID of the community question you want to delete."
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "Successfully deleted the community question and its associated image."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses menghapus pertanyaan beserta gambarnya."
+        404:
+          description: "Question not found"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Pertanyaan tidak ditemukan."
+        500:
+          description: "Internal server error"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan server internal."
+              error:
+                type: string
+                example: "Error: Unable to delete the question."
+
 
