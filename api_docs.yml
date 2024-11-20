@@ -15,6 +15,8 @@ tags:
     description: "Endpoints related to user profile"
   - name: "community"
     description: "Endpoints related to community"
+  - name: "e-commerce"
+    description: "Endpoints related to e-commerce"
 
 paths:
   /refresh-token/:
@@ -1355,4 +1357,154 @@ paths:
                 type: string
                 example: "Gagal menghapus jawaban: Database error."
 
+  /ecommerce/products/:
+    get:
+      tags:
+        - "e-commerce"
+      summary: "Get all products"
+      description: "Retrieve a list of all available products in the e-commerce system."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "A list of products."
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "The product ID."
+                product_name:
+                  type: string
+                  description: "The name of the product."
+                desc_product:
+                  type: string
+                  description: "A brief description of the product."
+                img_product:
+                  type: string
+                  description: "URL of the product image."
+                price:
+                  type: integer
+                  description: "The price of the product."
+                stock:
+                  type: integer
+                  description: "The stock quantity of the product."
+                sold:
+                  type: integer
+                  description: "The number of items sold."
+                users_id:
+                  type: integer
+                  description: "The ID of the user who added the product."
+                product_categories_id:
+                  type: integer
+                  description: "The category ID of the product."
+        404:
+          description: "No products found."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Tidak ada produk tersedia."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data produk."
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /ecommerce/products/filters/{product_categories_id}/:
+    get:
+      tags:
+        - "e-commerce"
+      summary: "Get products by category"
+      description: "Retrieve a list of products filtered by a specific category ID."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: product_categories_id
+          in: path
+          required: true
+          type: integer
+          description: "The ID of the product category to filter by."
+      responses:
+        200:
+          description: "A list of filtered products."
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "The product ID."
+                product_name:
+                  type: string
+                  description: "The name of the product."
+                desc_product:
+                  type: string
+                  description: "A brief description of the product."
+                img_product:
+                  type: string
+                  description: "URL of the product image."
+                price:
+                  type: integer
+                  description: "The price of the product."
+                stock:
+                  type: integer
+                  description: "The stock quantity of the product."
+                sold:
+                  type: integer
+                  description: "The number of items sold."
+                users_id:
+                  type: integer
+                  description: "The ID of the user who added the product."
+                product_categories_id:
+                  type: integer
+                  description: "The category ID of the product."
+        404:
+          description: "No products found for the specified category."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Produk dengan kategori ini tidak ditemukan."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data produk."
+              error:
+                type: string
+                example: "Database connection failed."
 

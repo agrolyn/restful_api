@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -199,6 +199,20 @@ def upd_ans(answer_id):
 @jwt_required()
 def del_ans(answer_id):
     return community_controller.delete_ans(answer_id)
+
+######################################################################
+####################### E-Commerce Endpoint ##########################
+######################################################################
+
+@app.route("/ecommerce/products/", methods=["GET"])
+@jwt_required()
+def get_all_products():
+    return ecommerce_controller.get_all_products()
+
+@app.route("/ecommerce/products/filters/<int:product_categories_id>/", methods=["GET"])
+@jwt_required()
+def get_filtered_products(product_categories_id):
+    return ecommerce_controller.get_filtered_products(product_categories_id)
 
 ######################################################################
 #################### AI Prediction Endpoint ##########################
