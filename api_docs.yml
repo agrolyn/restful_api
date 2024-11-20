@@ -242,10 +242,10 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
       responses:
         200:
-          description: "A list of articles"
+          description: "A list of articles."
           schema:
             type: array
             items:
@@ -253,23 +253,42 @@ paths:
               properties:
                 id:
                   type: integer
-                  description: "The article ID"
+                  description: "The article ID."
                 title:
                   type: string
-                  description: "The title of the article"
+                  description: "The title of the article."
                 thumbnail:
                   type: string
-                  description: "URL of the article thumbnail"
+                  description: "URL of the article thumbnail."
                 description:
                   type: string
-                  description: "A brief description of the article"
+                  description: "A brief description of the article."
                 location:
                   type: string
-                  description: "The location related to the article"
+                  description: "The location related to the article."
                 released_date:
                   type: string
                   format: date
-                  description: "The release date of the article"
+                  description: "The release date of the article."
+        404:
+          description: "No articles found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Tidak ada artikel tersedia."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data artikel."
+              error:
+                type: string
+                example: "Database connection failed."
 
   /articles/{id}/:
     get:
@@ -281,39 +300,56 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
         - name: id
           in: path
           required: true
           type: integer
-          description: "The ID of the article to retrieve"
+          description: "The ID of the article to retrieve."
       responses:
         200:
-          description: "Article details"
+          description: "Article details."
           schema:
             type: object
             properties:
               id:
                 type: integer
-                description: "The article ID"
+                description: "The article ID."
               title:
                 type: string
-                description: "The title of the article"
+                description: "The title of the article."
               thumbnail:
                 type: string
-                description: "URL of the article thumbnail"
+                description: "URL of the article thumbnail."
               description:
                 type: string
-                description: "A brief description of the article"
+                description: "A brief description of the article."
               location:
                 type: string
-                description: "The location related to the article"
+                description: "The location related to the article."
               released_date:
                 type: string
                 format: date
-                description: "The release date of the article"
+                description: "The release date of the article."
         404:
-          description: "Article not found"
+          description: "Article not found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Artikel tidak ditemukan."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data artikel."
+              error:
+                type: string
+                example: "Database connection failed."
 
   /recipes/:
     get:
@@ -325,10 +361,10 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
       responses:
         200:
-          description: "A list of recipes"
+          description: "A list of recipes."
           schema:
             type: array
             items:
@@ -336,19 +372,38 @@ paths:
               properties:
                 id:
                   type: integer
-                  description: "The recipe ID"
+                  description: "The recipe ID."
                 title:
                   type: string
-                  description: "The title of the recipe"
+                  description: "The title of the recipe."
                 img_recipe:
                   type: string
-                  description: "URL of the recipe image"
+                  description: "URL of the recipe image."
                 ingredients:
                   type: string
-                  description: "The ingredients needed for the recipe"
+                  description: "The ingredients needed for the recipe."
                 steps:
                   type: string
-                  description: "The instructions for preparing the recipe"
+                  description: "The instructions for preparing the recipe."
+        404:
+          description: "No recipes found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Tidak ada resep tersedia."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data resep."
+              error:
+                type: string
+                example: "Database connection failed."
 
   /recipes/{id}/:
     get:
@@ -360,35 +415,53 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
         - name: id
           in: path
           required: true
           type: integer
-          description: "The ID of the recipe to retrieve"
+          description: "The ID of the recipe to retrieve."
       responses:
         200:
-          description: "Recipe details"
+          description: "Recipe details."
           schema:
             type: object
             properties:
               id:
                 type: integer
-                description: "The recipe ID"
+                description: "The recipe ID."
               title:
                 type: string
-                description: "The title of the recipe"
+                description: "The title of the recipe."
               img_recipe:
                 type: string
-                description: "URL of the recipe image"
+                description: "URL of the recipe image."
               ingredients:
                 type: string
-                description: "The ingredients needed for the recipe"
+                description: "The ingredients needed for the recipe."
               steps:
                 type: string
-                description: "The instructions for preparing the recipe"
+                description: "The instructions for preparing the recipe."
         404:
-          description: "Recipe not found"
+          description: "Recipe not found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Resep tidak ditemukan."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data resep."
+              error:
+                type: string
+                example: "Database connection failed."
+
   /edit-profile/:
     put:
       tags:
@@ -1120,5 +1193,166 @@ paths:
               error:
                 type: string
                 example: "Error: Unable to delete the question."
+
+  /community/answer/new/{question_id}/:
+    post:
+      tags:
+        - "community"
+      summary: "Add a new community answer"
+      description: "Adds a new answer to a community question based on the provided question ID."
+      parameters:
+        - name: question_id
+          in: path
+          required: true
+          type: integer
+          description: "ID of the community question to which the answer belongs."
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              answer:
+                type: string
+                description: "The answer content."
+                example: "This is a sample answer."
+              plant_types_id:
+                type: integer
+                description: "ID of the plant type (if applicable)."
+                example: 1
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        201:
+          description: "Successfully added the answer."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses Menambahkan Jawaban Atas Pertanyaan Komunitas."
+        400:
+          description: "Invalid input data."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Answer atau User ID tidak boleh kosong."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Gagal menambahkan jawaban: Database error."
+
+  /community/answer/update/{answer_id}/:
+    put:
+      tags:
+        - "community"
+      summary: "Update a community answer"
+      description: "Updates an existing community answer based on the provided answer ID."
+      parameters:
+        - name: answer_id
+          in: path
+          required: true
+          type: integer
+          description: "ID of the community answer to update."
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              answer:
+                type: string
+                description: "The updated answer content."
+                example: "This is the updated answer."
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "Successfully updated the answer."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Jawaban berhasil diperbarui."
+        400:
+          description: "Invalid input data."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Answer tidak boleh kosong."
+        404:
+          description: "Answer not found or unauthorized access."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Jawaban tidak ditemukan atau Anda tidak berhak mengubahnya."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Gagal memperbarui jawaban: Database error."
+
+  /community/answer/delete/{answer_id}/:
+    delete:
+      tags:
+        - "community"
+      summary: "Delete a community answer"
+      description: "Deletes an existing community answer based on the provided answer ID."
+      parameters:
+        - name: answer_id
+          in: path
+          required: true
+          type: integer
+          description: "ID of the community answer to delete."
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "Successfully deleted the answer."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Jawaban berhasil dihapus."
+        404:
+          description: "Answer not found or unauthorized access."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Jawaban tidak ditemukan atau Anda tidak berhak menghapusnya."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Gagal menghapus jawaban: Database error."
 
 

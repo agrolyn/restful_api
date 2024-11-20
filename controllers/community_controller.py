@@ -315,12 +315,84 @@ def delete_q(question_id):
         "message": "Sukses menghapus pertanyaan."
     }), 200
 
-# Answer Endpoint (Create, Edit dan Delete)
 def new_ans(question_id):
-    return 0
+    try:
+        jwt_data = get_jwt_identity()
+        data = request.get_json()
+        datenow = datetime.now()
+
+        answer = data.get("answer")
+        plant_types_id = data.get("plant_types_id")
+        users_id = jwt_data.get("id")
+
+        # Validasi data
+        if not answer or not users_id:
+            return jsonify({"error": "Answer atau User ID tidak boleh kosong"}), 400
+
+        if not question_id:
+            return jsonify({"error": "Question ID tidak boleh kosong"}), 400
+
+        released_date = datenow.strftime('%Y-%m-%d %H:%M:%S')  # Format: '2024-11-18 12:30:45'
+
+        new_answer = Disccus(
+            answer=answer,
+            questions_id=question_id,
+            plant_types_id=plant_types_id,
+            like_num=0,
+            users_id=users_id,
+            released_date=released_date
+        )
+
+        db.session.add(new_answer)
+        db.session.commit()
+
+        return jsonify({"message": "Sukses Menambahkan Jawaban Atas Pertanyaan Komunitas"}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Gagal menambahkan jawaban: {str(e)}"}), 500
+
 
 def update_ans(answer_id):
-    return 0
+    try:
+        data = request.get_json()
+        jwt_data = get_jwt_identity()
+        user_id = jwt_data.get("id")
+
+        answer = data.get("answer")
+
+        # Validasi
+        if not answer:
+            return jsonify({"error": "Answer tidak boleh kosong"}), 400
+
+        ans = Disccus.query.filter_by(id=answer_id, users_id=user_id).first()
+        if not ans:
+            return jsonify({"error": "Jawaban tidak ditemukan atau Anda tidak berhak mengubahnya"}), 404
+
+        ans.answer = answer
+        db.session.commit()
+
+        return jsonify({"message": "Jawaban berhasil diperbarui"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Gagal memperbarui jawaban: {str(e)}"}), 500
+
 
 def delete_ans(answer_id):
-    return 0
+    try:
+        jwt_data = get_jwt_identity()
+        user_id = jwt_data.get("id")
+
+        ans = Disccus.query.filter_by(id=answer_id, users_id=user_id).first()
+        if not ans:
+            return jsonify({"error": "Jawaban tidak ditemukan atau Anda tidak berhak menghapusnya"}), 404
+
+        db.session.delete(ans)
+        db.session.commit()
+
+        return jsonify({"message": "Jawaban berhasil dihapus"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Gagal menghapus jawaban: {str(e)}"}), 500
