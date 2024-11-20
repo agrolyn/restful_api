@@ -79,15 +79,66 @@ def confirm_email_acc(token, s):
     try:
         email = s.loads(token, salt='email-confirm', max_age=3600)
     except:
-        return jsonify({'message': 'Tautan konfirmasi tidak valid atau telah kedaluwarsa.'}), 400
+        html = render_template_string('''
+        <html>
+        <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
+            <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <div style="text-align: center; padding-bottom: 10px;">
+                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: 80px;">
+                </div>
+                <div style="background-color: #f44336; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #ffffff; text-align: center;">
+                    <h2 style="margin: 0;">Invalid Link</h2>
+                </div>
+                <div style="padding: 20px;">
+                    <p>The confirmation link is either invalid or has expired. Please request a new confirmation link.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ''')
+        return html, 400
 
     user = Users.query.filter_by(email=email).first()
     if user.is_verified:
-        return jsonify({'message': 'Akun sudah dikonfirmasi.'}), 400
+        html = render_template_string('''
+        <html>
+        <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
+            <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <div style="text-align: center; padding-bottom: 10px;">
+                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: 80px;">
+                </div>
+                <div style="background-color: #ffc107; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #ffffff; text-align: center;">
+                    <h2 style="margin: 0;">Already Verified</h2>
+                </div>
+                <div style="padding: 20px;">
+                    <p>Your email address has already been confirmed. You can now log in.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ''')
+        return html, 400
     else:
         user.is_verified = True
         db.session.commit()
-        return jsonify({'message': 'Email telah diverifikasi. Anda sekarang dapat masuk.'}), 200
+        html = render_template_string('''
+        <html>
+        <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
+            <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <div style="text-align: center; padding-bottom: 10px;">
+                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: 80px;">
+                </div>
+                <div style="background-color: #4CAF50; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #ffffff; text-align: center;">
+                    <h2 style="margin: 0;">Email Confirmed</h2>
+                </div>
+                <div style="padding: 20px;">
+                    <p>Your email address has been successfully verified. You can now log in to Agrolyn Apps.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ''')
+        return html, 200
     
 def login_acc():
     data = request.get_json()
