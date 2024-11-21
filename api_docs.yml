@@ -1087,7 +1087,7 @@ paths:
               error:
                 type: string
                 example: "Database connection failed."
-      
+
   /community/question/new/:
     post:
       tags:
@@ -1255,7 +1255,7 @@ paths:
               error:
                 type: string
                 example: "Error: Database connection failed."
-  
+
   /community/question/delete/{question_id}/:
     delete:
       tags:
@@ -1702,4 +1702,98 @@ paths:
               error:
                 type: string
                 example: "Database connection failed."
-
+  /ecommerce/products/new_product/:
+    post:
+      tags:
+        - "e-commerce"
+      summary: "Add a new product"
+      description: "Add a new product to the marketplace, including details such as name, description, price, stock, category, and an image."
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: product_name
+          in: formData
+          type: string
+          required: true
+          description: "Name of the product"
+          example: "Organic Fertilizer"
+        - name: desc_product
+          in: formData
+          type: string
+          required: true
+          description: "Description of the product"
+          example: "High-quality organic fertilizer for crops."
+        - name: price
+          in: formData
+          type: integer
+          required: true
+          description: "Price of the product"
+          example: 25000
+        - name: stock
+          in: formData
+          type: integer
+          required: true
+          description: "Available stock for the product"
+          example: 100
+        - name: product_categories_id
+          in: formData
+          type: integer
+          required: true
+          description: "Category ID for the product"
+          example: 3
+        - name: img_product
+          in: formData
+          type: file
+          required: true
+          description: "Image file of the product"
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          description: "JWT token for user authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "Successfully added the product."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses menambahkan produk."
+              new_product:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "The ID of the new product"
+                  product_name:
+                    type: string
+                    description: "The name of the product"
+                  desc_product:
+                    type: string
+                    description: "The description of the product"
+                  img_product:
+                    type: string
+                    description: "URL of the uploaded product image"
+                  price:
+                    type: integer
+                    description: "The price of the product"
+                  stock:
+                    type: integer
+                    description: "The stock count of the product"
+        400:
+          description: "Bad request - Missing required data or invalid input"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal menambahkan data. Gambar tidak ditemukan."
+        500:
+          description: "Internal server error"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal mengunggah gambar."
