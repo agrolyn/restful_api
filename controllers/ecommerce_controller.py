@@ -121,7 +121,7 @@ def new_product():
     new_product = Products(
         product_name=product_name,
         desc_product=desc_product,
-        img_product=f"https://yourwebsite.com/static/uploads/{filename_img}",
+        img_product=f"https://agrolyn.online/static/uploads/{filename_img}",
         price=price,
         stock=stock,
         sold=0,  # Default
