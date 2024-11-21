@@ -85,8 +85,6 @@ def search_product():
         # Tangani jika terjadi error dengan database
         return jsonify({"status": "error", "message": "Kesalahan saat mencari produk", "error": str(e)}), 500
 
-
-
 def new_product():
     user_identity = get_jwt_identity()
   
@@ -137,4 +135,72 @@ def new_product():
         "message": "Sukses menambahkan produk",
         "new_product": new_product.to_dict()
     }), 200
+
+def update_product(product_id):
+    user_identity = get_jwt_identity()
+    users_id = user_identity.get("id")
     
+    # Ambil data produk berdasarkan ID
+    product = Products.query.filter_by(id=product_id, users_id=users_id).first()
+    
+    if not product:
+        return jsonify({"error": "Produk tidak ditemukan atau Anda tidak berhak mengubahnya"}), 404
+    
+    # Mengambil data dari form
+    product_name = request.form.get("product_name", product.product_name)
+    desc_product = request.form.get("desc_product", product.desc_product)
+    price = int(request.form.get("price", product.price))
+    stock = int(request.form.get("stock", product.stock))
+    product_categories_id = request.form.get("product_categories_id", product.product_categories_id)
+    img_product = request.files.get("img_product")
+    
+    # Validasi gambar
+    if img_product:
+        # Upload gambar menggunakan fungsi utility
+        filename_img = image_uploaded.uploads_image(img_product)
+        if not filename_img:
+            return jsonify({
+                "message": "Gagal mengunggah gambar."
+            }), 500
+        
+        # Hapus gambar lama jika ada
+        if product.img_product:
+            old_filename = product.img_product.split('/')[-1]
+            image_uploaded.delete_image(old_filename)
+        
+        product.img_product = f"https://agrolyn.online/static/uploads/{filename_img}"
+
+    # Perbarui data produk
+    product.product_name = product_name
+    product.desc_product = desc_product
+    product.price = price
+    product.stock = stock
+    product.product_categories_id = product_categories_id
+
+    db.session.commit()
+    
+    return jsonify({
+        "message": "Produk berhasil diperbarui",
+        "updated_product": product.to_dict()
+    }), 200
+
+def delete_product(product_id):
+    user_identity = get_jwt_identity()
+    users_id = user_identity.get("id")
+    
+    # Ambil data produk berdasarkan ID
+    product = Products.query.filter_by(id=product_id, users_id=users_id).first()
+    
+    if not product:
+        return jsonify({"error": "Produk tidak ditemukan atau Anda tidak berhak menghapusnya"}), 404
+    
+    # Hapus gambar produk jika ada
+    if product.img_product:
+        filename_img = product.img_product.split('/')[-1]
+        image_uploaded.delete_image(filename_img)
+    
+    # Hapus produk dari database
+    db.session.delete(product)
+    db.session.commit()
+    
+    return jsonify({"message": "Produk berhasil dihapus"}), 200
