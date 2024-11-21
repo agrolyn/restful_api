@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller,detection_controller,community_controller,product_controller
+from controllers import articles_controller, ecommers_controller, recipes_controller, auth_controller, profile_controller,detection_controller,community_controller
 from models.models import *
 from flask_migrate import Migrate
 from flasgger import Swagger
@@ -162,7 +162,7 @@ def get_disccus_route(questions_id):
 @app.route("/product", methods=["GET"])
 @jwt_required()
 def get_all_products():
-    return product_controller.get_all_products()
+    return ecommers_controller.get_all_products()
 
 
 if __name__ == "__main__":

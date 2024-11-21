@@ -15,8 +15,6 @@ tags:
     description: "Endpoints related to user profile"
   - name: "community"
     description: "Endpoints related to community"
-   - name: "product"
-    description: "Endpoints related to product"
 
 paths:
   /refresh-token/:
@@ -1356,48 +1354,3 @@ paths:
               error:
                 type: string
                 example: "Gagal menghapus jawaban: Database error."
-
- paths:
-  /authentication:
-    get:
-      summary: "Authentication endpoint"
-      description: "Handles user authentication."
-  /product:
-    get:
-      summary: "Retrieve all products"
-      description: "Fetch a list of all products available in the database."
-      responses:
-        200:
-          description: "A list of products retrieved successfully"
-          schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: "The unique ID of the product"
-                product_name:
-                  type: string
-                  description: "The name of the product"
-                desc_product:
-                  type: string
-                  description: "Description of the product"
-                img_product:
-                  type: string
-                  description: "URL of the product image"
-                price:
-                  type: integer
-                  description: "Price of the product"
-                stock:
-                  type: integer
-                  description: "Number of products in stock"
-                sold:
-                  type: integer
-                  description: "Number of products sold"
-                product_categories_id:
-                  type: integer
-                  description: "The ID of the product's category"
-                users_id:
-                  type: integer
-                  description: "The ID of the user who added the product"
