@@ -226,6 +226,11 @@ def get_filtered_products(product_categories_id):
 def search_product():
     return ecommerce_controller.search_product()
 
+@app.route("/ecommerce/products/new_product/", methods=["POST"])
+@jwt_required()
+def new_product():
+    return ecommerce_controller.new_product()
+
 ######################################################################
 #################### AI Prediction Endpoint ##########################
 ######################################################################

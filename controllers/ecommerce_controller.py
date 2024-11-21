@@ -4,6 +4,8 @@ from flask_jwt_extended import get_jwt_identity
 from models.models import *
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import or_
+from utils import image_uploaded
+
 
 from flask import jsonify
 
@@ -82,3 +84,57 @@ def search_product():
     except SQLAlchemyError as e:
         # Tangani jika terjadi error dengan database
         return jsonify({"status": "error", "message": "Kesalahan saat mencari produk", "error": str(e)}), 500
+
+
+
+def new_product():
+    user_identity = get_jwt_identity()
+  
+
+    # Mengambil ID user dari JWT
+    users_id = user_identity.get("id")
+
+    # Mengambil data dari form
+    product_name = request.form["product_name"]
+    desc_product = request.form["desc_product"]
+    price = int(request.form.get("price", 0))
+    stock = int(request.form.get("stock", 0))
+    product_categories_id = request.form["product_categories_id"]
+    img_product = request.files.get("img_product")
+
+
+    # Validasi gambar
+    if not img_product:
+        return jsonify({
+            "message": "Gagal menambahkan data. Gambar tidak ditemukan."
+        }), 400
+
+    # Upload gambar menggunakan fungsi utility
+    filename_img = image_uploaded.uploads_image(img_product)
+
+    if not filename_img:
+        return jsonify({
+            "message": "Gagal mengunggah gambar."
+        }), 500
+
+    # Jika upload berhasil, buat instance produk baru
+    new_product = Products(
+        product_name=product_name,
+        desc_product=desc_product,
+        img_product=f"https://yourwebsite.com/static/uploads/{filename_img}",
+        price=price,
+        stock=stock,
+        sold=0,  # Default
+        product_categories_id=product_categories_id,
+        users_id=users_id
+    )
+
+    # Simpan ke database
+    db.session.add(new_product)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Sukses menambahkan produk",
+        "new_product": new_product.to_dict()
+    }), 200
+    
