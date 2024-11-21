@@ -798,6 +798,112 @@ paths:
                     type: string
                     description: "Details about the error"
 
+  /community/questions/search/:
+    get:
+      tags:
+        - "community"
+      summary: "Search community questions"
+      description: "Search for community questions based on a query keyword. Requires a valid JWT token."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The keyword to search for in community questions"
+      responses:
+        200:
+          description: "A list of community questions matching the search query"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "Response status"
+                  message:
+                    type: string
+                    description: "Status message"
+                    example: "Sukses menemukan 2 pertanyaan komunitas berdasarkan pencarian"
+                  data:
+                    type: array
+                    description: "List of matching questions"
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "The ID of the question"
+                        title_q:
+                          type: string
+                          description: "The title of the question"
+                        description:
+                          type: string
+                          description: "The detailed description of the question"
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: "The date and time when the question was created"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: "The date and time when the question was last updated"
+        400:
+          description: "Invalid query parameter"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "Response status"
+                    example: "error"
+                  message:
+                    type: string
+                    description: "Error message"
+                    example: "Parameter query tidak boleh kosong"
+        404:
+          description: "No matching questions found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "Response status"
+                    example: "error"
+                  message:
+                    type: string
+                    description: "Error message"
+                    example: "Pertanyaan tidak ditemukan"
+        500:
+          description: "An error occurred while processing the request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: "Response status"
+                    example: "error"
+                  message:
+                    type: string
+                    description: "Error message"
+                    example: "Kesalahan saat mencari pertanyaan komunitas"
+                  error:
+                    type: string
+                    description: "Details about the error"
+
   /community/questions/{id}/like/:
     post:
       tags:
@@ -1504,6 +1610,95 @@ paths:
               message:
                 type: string
                 example: "Kesalahan saat mengambil data produk."
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /ecommerce/products/search/:
+    get:
+      tags:
+        - "e-commerce"
+      summary: "Search products by keyword"
+      description: "Retrieve a list of products that match the given search query."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: query
+          in: query
+          required: true
+          type: string
+          description: "The search keyword to find matching products."
+      responses:
+        200:
+          description: "A list of products matching the search query."
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "The product ID."
+                product_name:
+                  type: string
+                  description: "The name of the product."
+                desc_product:
+                  type: string
+                  description: "A brief description of the product."
+                img_product:
+                  type: string
+                  description: "URL of the product image."
+                price:
+                  type: integer
+                  description: "The price of the product."
+                stock:
+                  type: integer
+                  description: "The stock quantity of the product."
+                sold:
+                  type: integer
+                  description: "The number of items sold."
+                users_id:
+                  type: integer
+                  description: "The ID of the user who added the product."
+                product_categories_id:
+                  type: integer
+                  description: "The category ID of the product."
+        400:
+          description: "Invalid or missing query parameter."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Parameter query tidak boleh kosong."
+        404:
+          description: "No products found for the search query."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Produk tidak ditemukan."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat mencari produk."
               error:
                 type: string
                 example: "Database connection failed."

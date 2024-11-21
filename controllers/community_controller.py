@@ -4,6 +4,8 @@ from flask_jwt_extended import get_jwt_identity
 from models.models import *
 from utils import image_uploaded
 from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import or_
 
 from flask import jsonify
 
@@ -125,6 +127,43 @@ def get_filtered_question(filter_name):
     except Exception as e:
         return jsonify({"message": "Error terjadi", "error": str(e)}), 500
 
+def search_community_question():
+    try:
+        # Ambil query dari URL parameter dan hilangkan spasi tambahan
+        query = request.args.get('query', default='', type=str).strip()
+        
+        # Jika query kosong, kembalikan error
+        if not query:
+            return jsonify({'status': 'error', 'message': 'Parameter query tidak boleh kosong'}), 400
+        
+        # Pecah query menjadi kata-kata
+        keywords = query.split()
+        
+        # Filter menggunakan semua kata kunci
+        filters = [
+            Questions.title_q.ilike(f"%{keyword}%") | Questions.description.ilike(f"%{keyword}%")
+            for keyword in keywords
+        ]
+        
+        # Gabungkan filter dengan operator "or"
+        matching_questions = Questions.query.filter(or_(*filters)).all()
+        
+        # Jika tidak ada pertanyaan ditemukan
+        if not matching_questions:
+            return jsonify({'status': 'error', 'message': 'Pertanyaan tidak ditemukan'}), 404
+        
+        # Konversi hasil query ke dalam bentuk dictionary
+        questions = [question.to_dict() for question in matching_questions]
+        
+        return jsonify({
+            "status": "success",
+            "message": f"Sukses menemukan {len(questions)} pertanyaan komunitas berdasarkan pencarian",
+            "data": questions
+        }), 200
+
+    except SQLAlchemyError as e:
+        # Tangani jika terjadi error dengan database
+        return jsonify({"status": "error", "message": "Kesalahan saat mencari pertanyaan komunitas", "error": str(e)}), 500
     
 ######################################################################
 ###################### Like Dislike Endpoint #########################

@@ -141,10 +141,17 @@ def get_all_question():
 def get_detail_question(id):
     return community_controller.get_detail_question(id)
 
+# Filtering
 @app.route("/community/questions/filters/<string:filter_name>/", methods=["GET"])
 @jwt_required()
 def get_filtered_question(filter_name):
     return community_controller.get_filtered_question(filter_name)
+
+# Search Community Question
+@app.route("/community/questions/search/", methods=["GET"])
+@jwt_required()
+def search_community_q():
+    return community_controller.search_community_question()
 
 # Like and Dislike Community Question
 @app.route("/community/questions/<int:id>/like/", methods=["POST"])
@@ -213,6 +220,11 @@ def get_all_products():
 @jwt_required()
 def get_filtered_products(product_categories_id):
     return ecommerce_controller.get_filtered_products(product_categories_id)
+
+@app.route("/ecommerce/products/search/", methods=["GET"])
+@jwt_required()
+def search_product():
+    return ecommerce_controller.search_product()
 
 ######################################################################
 #################### AI Prediction Endpoint ##########################
