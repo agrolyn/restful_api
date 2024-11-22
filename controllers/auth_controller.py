@@ -81,16 +81,19 @@ def confirm_email_acc(token, s):
     except:
         html = render_template_string('''
         <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        </head>
         <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
             <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <div style="text-align: center; padding-bottom: 10px;">
-                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: 80px;">
+                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: auto;">
                 </div>
                 <div style="background-color: #f44336; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #ffffff; text-align: center;">
-                    <h2 style="margin: 0;">Invalid Link</h2>
+                    <h2 style="margin: 0; font-size: 1.5rem;">Invalid Link</h2>
                 </div>
                 <div style="padding: 20px;">
-                    <p>The confirmation link is either invalid or has expired. Please request a new confirmation link.</p>
+                    <p style="font-size: 1rem;">The confirmation link is either invalid or has expired. Please request a new confirmation link.</p>
                 </div>
             </div>
         </body>
@@ -102,16 +105,19 @@ def confirm_email_acc(token, s):
     if user.is_verified:
         html = render_template_string('''
         <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        </head>
         <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
             <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <div style="text-align: center; padding-bottom: 10px;">
-                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: 80px;">
+                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: auto;">
                 </div>
                 <div style="background-color: #ffc107; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #ffffff; text-align: center;">
-                    <h2 style="margin: 0;">Already Verified</h2>
+                    <h2 style="margin: 0; font-size: 1.5rem;">Already Verified</h2>
                 </div>
                 <div style="padding: 20px;">
-                    <p>Your email address has already been confirmed. You can now log in.</p>
+                    <p style="font-size: 1rem;">Your email address has already been confirmed. You can now log in.</p>
                 </div>
             </div>
         </body>
@@ -123,16 +129,19 @@ def confirm_email_acc(token, s):
         db.session.commit()
         html = render_template_string('''
         <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        </head>
         <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
             <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <div style="text-align: center; padding-bottom: 10px;">
-                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: 80px;">
+                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: auto;">
                 </div>
                 <div style="background-color: #4CAF50; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #ffffff; text-align: center;">
-                    <h2 style="margin: 0;">Email Confirmed</h2>
+                    <h2 style="margin: 0; font-size: 1.5rem;">Email Confirmed</h2>
                 </div>
                 <div style="padding: 20px;">
-                    <p>Your email address has been successfully verified. You can now log in to Agrolyn Apps.</p>
+                    <p style="font-size: 1rem;">Your email address has been successfully verified. You can now log in to Agrolyn Apps.</p>
                 </div>
             </div>
         </body>
@@ -231,7 +240,48 @@ def forgot_pwd(s, mail):
 
 def reset_pwd(token, s):
     if request.method == 'GET':
-        return jsonify({'message': 'Berhasil memverifikasi email, mengatur ulang kata sandi.'}), 200
+        # HTML responsif untuk halaman konfirmasi email berhasil
+        html = render_template_string('''
+        <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        </head>
+        <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
+            <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <!-- Bagian logo -->
+                <div style="text-align: center; padding-bottom: 10px;">
+                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: auto;">
+                </div>
+                <!-- Header dengan warna hijau untuk menandakan keberhasilan -->
+                <div style="background-color: #4CAF50; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #ffffff; text-align: center;">
+                    <h2 style="margin: 0; font-size: 1.5rem;">Email Verified</h2>
+                </div>
+                <!-- Konten utama untuk menampilkan informasi -->
+                <div style="padding: 20px;">
+                    <p style="font-size: 1rem;">Your email has been successfully verified. You can now reset your password.</p>
+                    <!-- Menampilkan token -->
+                    <div style="margin-top: 20px;">
+                        <label for="token" style="display: block; margin-bottom: 8px; font-weight: bold;">Your Token:</label>
+                        <input type="text" id="token" value="{{ token }}" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; background-color: #f9f9f9;">
+                    </div>
+                    <!-- Tombol untuk menyalin token -->
+                    <button onclick="copyToken()" style="margin-top: 20px; background-color: #4CAF50; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem;">Copy Token</button>
+                </div>
+            </div>
+            <!-- JavaScript untuk menyalin token ke clipboard -->
+            <script>
+                function copyToken() {
+                    const tokenInput = document.getElementById('token');
+                    tokenInput.select();
+                    tokenInput.setSelectionRange(0, 99999); // Untuk perangkat mobile
+                    document.execCommand('copy');
+                    alert('Token copied to clipboard!');
+                }
+            </script>
+        </body>
+        </html>
+        ''', token=token)
+        return html, 200
 
     elif request.method == 'POST':
         # Coba memuat email dari token

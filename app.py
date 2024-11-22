@@ -211,6 +211,7 @@ def del_ans(answer_id):
 ####################### E-Commerce Endpoint ##########################
 ######################################################################
 
+# Common GET Request E-Commerce
 @app.route("/ecommerce/products/", methods=["GET"])
 @jwt_required()
 def get_all_products():
@@ -225,6 +226,22 @@ def get_filtered_products(product_categories_id):
 @jwt_required()
 def search_product():
     return ecommerce_controller.search_product()
+
+# CRUD Functionality
+@app.route("/ecommerce/products/new-product/", methods=["POST"])
+@jwt_required()
+def new_product():
+    return ecommerce_controller.new_product()
+
+@app.route("/ecommerce/products/update-product/<int:product_id>/", methods=["PUT"])
+@jwt_required()
+def update_product(product_id):
+    return ecommerce_controller.update_product(product_id)
+
+@app.route("/ecommerce/products/delete-product/<int:product_id>/", methods=["DELETE"])
+@jwt_required()
+def delete_product(product_id):
+    return ecommerce_controller.delete_product(product_id)
 
 ######################################################################
 #################### AI Prediction Endpoint ##########################

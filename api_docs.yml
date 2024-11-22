@@ -1113,7 +1113,11 @@ paths:
           in: formData
           type: integer
           required: true
-          description: "The ID of the plant type related to the question"
+          enum:
+            - 1
+            - 2
+            - 3
+          description: "The ID of the plant type related to the question. Options: 1 = padi, 2 = jagung, 3 = umum."
           example: 1
         - name: img_q
           in: formData
@@ -1188,7 +1192,11 @@ paths:
           in: formData
           type: integer
           required: false
-          description: "Updated ID of the plant type related to the question"
+          enum:
+            - 1
+            - 2
+            - 3
+          description: "Updated ID of the plant type related to the question. Options: 1 = padi, 2 = jagung, 3 = umum."
           example: 2
         - name: img_q
           in: formData
@@ -1230,31 +1238,10 @@ paths:
                     description: "The release date of the question"
         400:
           description: "Bad request - Missing required data or invalid input"
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Gagal memperbarui pertanyaan. Data tidak valid atau gambar tidak ditemukan."
         404:
           description: "Question not found"
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Pertanyaan tidak ditemukan."
         500:
           description: "Internal server error"
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Kesalahan server internal."
-              error:
-                type: string
-                example: "Error: Database connection failed."
   
   /community/question/delete/{question_id}/:
     delete:
@@ -1703,3 +1690,204 @@ paths:
                 type: string
                 example: "Database connection failed."
 
+  /ecommerce/products/new-product/:
+    post:
+      tags:
+        - "e-commerce"
+      summary: "Add a new product"
+      description: "Endpoint to add a new product to the e-commerce system."
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: product_name
+          in: formData
+          required: true
+          type: string
+          description: "Name of the product."
+        - name: desc_product
+          in: formData
+          required: true
+          type: string
+          description: "Description of the product."
+        - name: price
+          in: formData
+          required: true
+          type: integer
+          description: "Price of the product."
+        - name: stock
+          in: formData
+          required: true
+          type: integer
+          description: "Stock quantity of the product."
+        - name: product_categories_id
+          in: formData
+          required: true
+          type: string
+          enum:
+            - "1"
+            - "2"
+            - "3"
+          description: "Category ID of the product. Options: 1 = mentah, 2 = olahan, 3 = lainnya."
+        - name: img_product
+          in: formData
+          required: true
+          type: file
+          description: "Image file of the product."
+      responses:
+        200:
+          description: "Product successfully added."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses menambahkan produk"
+              new_product:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  product_name:
+                    type: string
+                  desc_product:
+                    type: string
+                  img_product:
+                    type: string
+                  price:
+                    type: integer
+                  stock:
+                    type: integer
+                  sold:
+                    type: integer
+                  users_id:
+                    type: integer
+                  product_categories_id:
+                    type: integer
+        400:
+          description: "Missing required fields or validation failed."
+        500:
+          description: "Internal server error."
+
+  /ecommerce/products/update-product/{product_id}/:
+    put:
+      tags:
+        - "e-commerce"
+      summary: "Update an existing product"
+      description: "Endpoint to update an existing product by its ID."
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: product_id
+          in: path
+          required: true
+          type: integer
+          description: "ID of the product to update."
+        - name: product_name
+          in: formData
+          required: false
+          type: string
+          description: "New name of the product."
+        - name: desc_product
+          in: formData
+          required: false
+          type: string
+          description: "New description of the product."
+        - name: price
+          in: formData
+          required: false
+          type: integer
+          description: "New price of the product."
+        - name: stock
+          in: formData
+          required: false
+          type: integer
+          description: "New stock quantity of the product."
+        - name: product_categories_id
+          in: formData
+          required: false
+          type: string
+          enum:
+            - "1"
+            - "2"
+            - "3"
+          description: "New category ID of the product. Options: 1 = mentah, 2 = olahan, 3 = lainnya."
+        - name: img_product
+          in: formData
+          required: false
+          type: file
+          description: "New image file of the product."
+      responses:
+        200:
+          description: "Product successfully updated."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Produk berhasil diperbarui"
+              updated_product:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  product_name:
+                    type: string
+                  desc_product:
+                    type: string
+                  img_product:
+                    type: string
+                  price:
+                    type: integer
+                  stock:
+                    type: integer
+                  sold:
+                    type: integer
+                  users_id:
+                    type: integer
+                  product_categories_id:
+                    type: integer
+        404:
+          description: "Product not found."
+        500:
+          description: "Internal server error."
+
+  /ecommerce/products/delete-product/{product_id}/:
+    delete:
+      tags:
+        - "e-commerce"
+      summary: "Delete a product"
+      description: "Endpoint to delete an existing product by its ID."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: product_id
+          in: path
+          required: true
+          type: integer
+          description: "ID of the product to delete."
+      responses:
+        200:
+          description: "Product successfully deleted."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Produk berhasil dihapus"
+        404:
+          description: "Product not found."
+        500:
+          description: "Internal server error."
