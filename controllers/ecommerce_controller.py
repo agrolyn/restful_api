@@ -192,7 +192,7 @@ def delete_product(product_id):
     product = Products.query.filter_by(id=product_id, users_id=users_id).first()
     
     if not product:
-        return jsonify({"error": "Produk tidak ditemukan atau Anda tidak berhak menghapusnya"}), 404
+        return jsonify({ "message": "product tidak ditemukan."}), 404
     
     # Hapus gambar produk jika ada
     if product.img_product:
