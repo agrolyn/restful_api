@@ -1523,6 +1523,79 @@ paths:
                 type: string
                 example: "Database connection failed."
 
+  /ecommerce/products/me/:
+    get:
+      tags:
+        - "e-commerce"
+      summary: "Get user's products"
+      description: "Retrieve a list of all products added by the authenticated user."
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "A list of the user's products."
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "The product ID."
+                product_name:
+                  type: string
+                  description: "The name of the product."
+                desc_product:
+                  type: string
+                  description: "A brief description of the product."
+                img_product:
+                  type: string
+                  description: "URL of the product image."
+                price:
+                  type: integer
+                  description: "The price of the product."
+                stock:
+                  type: integer
+                  description: "The stock quantity of the product."
+                sold:
+                  type: integer
+                  description: "The number of items sold."
+                users_id:
+                  type: integer
+                  description: "The ID of the user who added the product."
+                product_categories_id:
+                  type: integer
+                  description: "The category ID of the product."
+        404:
+          description: "No products found for the authenticated user."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Produk tidak ditemukan."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data produk."
+              error:
+                type: string
+                example: "Database connection failed."
+
   /ecommerce/products/filters/{product_categories_id}/:
     get:
       tags:

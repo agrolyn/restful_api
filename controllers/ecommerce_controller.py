@@ -25,6 +25,30 @@ def get_all_products():
     except SQLAlchemyError as e:
         return jsonify({"status": "error", "message": "Kesalahan saat mengambil data produk", "error": str(e)}), 500
 
+def product_me():
+    get_identity = get_jwt_identity()
+    users_id = get_identity.get("id")
+
+    try:
+        my_products = Products.query.filter_by(users_id=users_id).all()
+        
+        # Jika tidak ada produk ditemukan
+        if not my_products:
+            return jsonify({'status': 'error', 'message': 'Produk tidak ditemukan'}), 404
+        
+        # Konversi hasil query ke dalam bentuk dictionary
+        products = [product.to_dict() for product in my_products]
+        
+        return jsonify({
+            "status": "success",
+            "message": "Sukses menampilkan data produk",
+            "data": products
+        }), 200
+
+    except SQLAlchemyError as e:
+        # Tangani jika terjadi error dengan database
+        return jsonify({"status": "error", "message": "Kesalahan saat mengambil data produk", "error": str(e)}), 500
+
 def get_filtered_products(product_categories_id):
     try:
         # Ambil semua produk berdasarkan kategori

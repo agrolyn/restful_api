@@ -212,6 +212,7 @@ def del_ans(answer_id):
 ######################################################################
 
 # Common GET Request E-Commerce
+# Common User
 @app.route("/ecommerce/products/", methods=["GET"])
 @jwt_required()
 def get_all_products():
@@ -226,6 +227,12 @@ def get_filtered_products(product_categories_id):
 @jwt_required()
 def search_product():
     return ecommerce_controller.search_product()
+
+# Farmer
+@app.route("/ecommerce/products/me/", methods=["GET"])
+@jwt_required()
+def product_me():
+    return ecommerce_controller.product_me()
 
 # CRUD Functionality
 @app.route("/ecommerce/products/new-product/", methods=["POST"])
