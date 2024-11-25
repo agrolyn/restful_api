@@ -90,6 +90,10 @@ class Recipes(db.Model):
     __tablename__ = 'recipes'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    calories = db.Column(db.String(50), nullable=False)
+    protein = db.Column(db.String(50), nullable=False)
+    karbo = db.Column(db.String(50), nullable=False)
     img_recipe = db.Column(db.String(255), nullable=False)
     ingredients = db.Column(db.Text, nullable=False)
     steps = db.Column(db.Text, nullable=False)
@@ -98,6 +102,10 @@ class Recipes(db.Model):
         return {
             'id': self.id,
             'title': self.title,
+            'description': self.description,
+            'calories': self.calories,
+            'protein': self.protein,
+            'karbo': self.karbo,
             'img_recipe': self.img_recipe,
             'ingredients': self.ingredients,
             'steps': self.steps,

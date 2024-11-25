@@ -378,6 +378,18 @@ paths:
                 title:
                   type: string
                   description: "The title of the recipe."
+                description:
+                  type: string
+                  description: "The description of the recipe."
+                calories:
+                  type: string
+                  description: "The calories of the recipe."
+                protein:
+                  type: string
+                  description: "The protein of the recipe."
+                karbo:
+                  type: string
+                  description: "The karbo of the recipe."
                 img_recipe:
                   type: string
                   description: "URL of the recipe image."
@@ -435,6 +447,18 @@ paths:
               title:
                 type: string
                 description: "The title of the recipe."
+              description:
+                type: string
+                description: "The description of the recipe."
+              calories:
+                type: string
+                description: "The calories of the recipe."
+              protein:
+                type: string
+                description: "The protein of the recipe."
+              karbo:
+                type: string
+                description: "The karbo of the recipe."
               img_recipe:
                 type: string
                 description: "URL of the recipe image."
