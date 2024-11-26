@@ -17,6 +17,8 @@ tags:
     description: "Endpoints related to community"
   - name: "e-commerce"
     description: "Endpoints related to e-commerce"
+  - name: "video education"
+    description: "Endpoints related to video education"
 
 paths:
   /refresh-token/:
@@ -1988,3 +1990,126 @@ paths:
           description: "Product not found."
         500:
           description: "Internal server error."
+
+  /video-education/:
+    get:
+      tags:
+        - "video education"
+      summary: "Get all video education"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "List of all video education."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "success"
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "The video ID."
+                    title:
+                      type: string
+                      description: "The title of the video."
+                    thumbnail:
+                      type: string
+                      description: "URL of the video thumbnail."
+                    description:
+                      type: string
+                      description: "The description of the video."
+                    link_yt:
+                      type: string
+                      description: "YouTube link of the video."
+        404:
+          description: "No video education found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Tidak ada video edukasi tersedia."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data video edukasi."
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /video-education/{id}/:
+    get:
+      tags:
+        - "video education"
+      summary: "Get video education by ID"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: "The ID of the video to retrieve."
+      responses:
+        200:
+          description: "Video education details."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "success"
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "The video ID."
+                  title:
+                    type: string
+                    description: "The title of the video."
+                  thumbnail:
+                    type: string
+                    description: "URL of the video thumbnail."
+                  description:
+                    type: string
+                    description: "The description of the video."
+                  link_yt:
+                    type: string
+                    description: "YouTube link of the video."
+        404:
+          description: "Video education not found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Video edukasi tidak ditemukan."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data video edukasi."
+              error:
+                type: string
+                example: "Database connection failed."

@@ -114,6 +114,25 @@ class Recipes(db.Model):
     def __repr__(self):
         return f"Recipes('{self.title}')"
 
+class VideoEducation(db.Model):
+    __tablename__ = 'video_education'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    thumbnail = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    link_yt = db.Column(db.String(255), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'thumbnail': self.thumbnail,
+            'description': self.description,
+            'link_yt': self.link_yt,
+        }
+
+    def __repr__(self):
+        return f"VideoEducation('{self.title}', '{self.link_yt}')"
 
 class Users(db.Model):
     __tablename__ = 'users'

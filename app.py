@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -117,6 +117,20 @@ def all_recipes():
 @jwt_required()
 def detail_recipe(id):
     return recipes_controller.get_detail_recipes(id)
+
+######################################################################
+##################### Video Education Endpoint #######################
+######################################################################
+
+@app.route("/video-education/", methods=["GET"])
+@jwt_required()
+def all_videdu():
+    return videdu_controller.get_all_videdu()
+
+@app.route("/video-education/<int:id>/", methods=["GET"])
+@jwt_required()
+def detail_videdu(id):
+    return videdu_controller.get_detail_videdu(id)
 
 ######################################################################
 ######################## Profile Endpoint ############################
