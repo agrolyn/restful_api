@@ -1,96 +1,53 @@
-# import numpy as np
-# from flask import *
-# from tensorflow.keras.models import load_model
-# from tensorflow.keras.preprocessing import image
-# import io  
-# from PIL import Image 
+from models.models import *
+from flask import jsonify, request
+from utils.image_uploaded import predict_plant_disease
 
-# # Corn Model
-# MODEL_PATH = 'static/model_ai/corn_disease.keras'
-# model_corn = load_model(MODEL_PATH)
+def rice_disease_detection():
+    img_pred = request.files.get("img_pred")
 
-# # Rice Model
-# MODEL_PATH = 'static/model_ai/rice_disease.keras'
-# model_rice = load_model(MODEL_PATH)
-
-# def corn_disease_predict():
-#     class_labels = [
-#         'Cercospora_leaf_spot Gray_leaf_spot',
-#         'Common_rust',
-#         'Northern_Leaf_Blight',
-#         'healthy'
-#     ]
-
-#     # Cek apakah file ada dalam request
-#     if 'img_pred' not in request.files:
-#         return jsonify({'error': 'Tidak ada file yang dikirimkan'}), 400
-
-#     file = request.files['img_pred']
-
-#     # Jika file kosong
-#     if file.filename == '':
-#         return jsonify({'error': 'File tidak ditemukan'}), 400
-
-#     # Membaca gambar dari file yang diupload
-#     try:
-#         img = Image.open(io.BytesIO(file.read()))  # Membaca file menjadi gambar dengan PIL
-#         img = img.resize((128, 128))  # Sesuaikan ukuran gambar dengan input model
-#         img_array = np.array(img)  # Mengubah gambar menjadi array numpy
-#         x = np.expand_dims(img_array, axis=0)  # Tambahkan batch dimension
-#     except Exception as e:
-#         return jsonify({'error': 'Failed to process image', 'message': str(e)}), 500
-
-#     # Melakukan prediksi
-#     try:
-#         preds = model_corn.predict(x)
-#         index = np.argmax(preds, axis=1)[0]
-#         predicted_disease = class_labels[index]
-#     except Exception as e:
-#         return jsonify({'error': 'Failed Prediction', 'message': str(e)}), 500
-
-#     # Mengembalikan hasil prediksi
-#     return jsonify({'Corn Disease': predicted_disease})
-
-# def rice_disease_predict():
-#     class_labels = [
-#         'bacterial_leaf_blight',
-#         'bacterial_leaf_streak',
-#         'bacterial_panicle_blight',
-#         'blast',
-#         'brown_spot',
-#         'dead_heart',
-#         'downy_mildew',
-#         'hispa',
-#         'normal',
-#         'tungro'
-#     ]
+    # Validasi gambar
+    if not img_pred:
+        return jsonify({
+            "message": "Gambar tidak ditemukan."
+        }), 400
     
-#     # Cek apakah file ada dalam request
-#     if 'img_pred' not in request.files:
-#         return jsonify({'error': 'Tidak ada file yang dikirimkan'}), 400
+    prediction = predict_plant_disease(img=img_pred, plant_type="rice")
 
-#     file = request.files['img_pred']
+    data = PlantDis.query.filter(PlantDis.dis_name.ilike(f"%{prediction}%")).all()
+    
+    data_predict = [pred.to_dict() for pred in data]
 
-#     # Jika file kosong
-#     if file.filename == '':
-#         return jsonify({'error': 'File tidak ditemukan'}), 400
+    if prediction:
+        return jsonify({
+            "message": "Sukses menampilkan hasil prediksi penyakit",
+            "prediction": data_predict
+        }), 200
+    
+    return jsonify({
+            "message": "Gagal menampilkan hasil prediksi penyakit",
+        }), 404
 
-#     # Membaca gambar dari file yang diupload
-#     try:
-#         img = Image.open(io.BytesIO(file.read()))  # Membaca file menjadi gambar dengan PIL
-#         img = img.resize((128, 128))  # Sesuaikan ukuran gambar dengan input model
-#         img_array = np.array(img)  # Mengubah gambar menjadi array numpy
-#         x = np.expand_dims(img_array, axis=0)  # Tambahkan batch dimension
-#     except Exception as e:
-#         return jsonify({'error': 'Failed to process image', 'message': str(e)}), 500
+def corn_disease_detection():
+    img_pred = request.files.get("img_pred")
 
-#     # Melakukan prediksi
-#     try:
-#         preds = model_rice.predict(x)
-#         index = np.argmax(preds, axis=1)[0]
-#         predicted_disease = class_labels[index]
-#     except Exception as e:
-#         return jsonify({'error': 'Failed Prediction', 'message': str(e)}), 500
+    # Validasi gambar
+    if not img_pred:
+        return jsonify({
+            "message": "Gambar tidak ditemukan."
+        }), 400
+    
+    prediction = predict_plant_disease(img=img_pred, plant_type="corn")
 
-#     # Mengembalikan hasil prediksi
-#     return jsonify({'Rice Disease': predicted_disease})
+    data = PlantDis.query.filter(PlantDis.dis_name.ilike(f"%{prediction}%")).all()
+
+    data_predict = [pred.to_dict() for pred in data]
+    
+    if prediction:
+        return jsonify({
+            "message": "Sukses menampilkan hasil prediksi penyakit",
+            "prediction": data_predict
+        }), 200
+    
+    return jsonify({
+            "message": "Gagal menampilkan hasil prediksi penyakit",
+        }), 404

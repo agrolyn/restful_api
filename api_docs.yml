@@ -19,6 +19,8 @@ tags:
     description: "Endpoints related to e-commerce"
   - name: "video education"
     description: "Endpoints related to video education"
+  - name: "AI plant disease detection"
+    description: "Endpoints related to AI plant disease detection"
 
 paths:
   /refresh-token/:
@@ -2113,3 +2115,124 @@ paths:
               error:
                 type: string
                 example: "Database connection failed."
+
+  /corn-disease-predict:
+    post:
+      tags:
+        - "AI plant disease detection"
+      summary: "Predict corn diseases from an uploaded image"
+      description: "Endpoint to analyze an uploaded image and predict diseases affecting corn."
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: img_pred
+          in: formData
+          required: true
+          type: file
+          description: "Image file of the corn plant to be analyzed."
+      responses:
+        200:
+          description: "Prediction successful."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses menampilkan hasil prediksi penyakit"
+              prediction:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  dis_name:
+                    type: string
+                  dis_indo_name:
+                    type: string
+                  handling:
+                    type: string
+                  plant_types_id:
+                    type: integer
+                  description:
+                    type: string
+        400:
+          description: "Image not found or invalid."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gambar tidak ditemukan."
+        404:
+          description: "Prediction failed or no matching disease found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal menampilkan hasil prediksi penyakit."
+
+  /rice-disease-predict:
+    post:
+      tags:
+        - "AI plant disease detection"
+      summary: "Predict rice diseases from an uploaded image"
+      description: "Endpoint to analyze an uploaded image and predict diseases affecting rice."
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: img_pred
+          in: formData
+          required: true
+          type: file
+          description: "Image file of the rice plant to be analyzed."
+      responses:
+        200:
+          description: "Prediction successful."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Sukses menampilkan hasil prediksi penyakit"
+              prediction:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  dis_name:
+                    type: string
+                  dis_indo_name:
+                    type: string
+                  handling:
+                    type: string
+                  plant_types_id:
+                    type: integer
+                  description:
+                    type: string
+        400:
+          description: "Image not found or invalid."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gambar tidak ditemukan."
+        404:
+          description: "Prediction failed or no matching disease found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Gagal menampilkan hasil prediksi penyakit."
+

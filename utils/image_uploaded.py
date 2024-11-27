@@ -9,19 +9,38 @@ import requests
 ######################## Utility Function ############################
 ######################################################################
 
-def uploads_image(img):
-    # Simpan file ke direktori sementara
+def predict_plant_disease(img, plant_type):
     temp_path = "/tmp"
     filename = os.path.join(temp_path, img.filename)
     img.save(filename)
 
-    # Gunakan file yang disimpan untuk upload
+    url = f"http://phbtegal.com:5039/{plant_type}-disease-predict"
+    with open(filename, 'rb') as img_file:
+        files = {'img_pred': img_file}
+        try:
+            response = requests.post(url, files=files)
+            if response.status_code == 200:
+                return response.json().get("prediction")
+            else:
+                print("Failed prediction:", response.status_code, response.text)
+                return None
+
+        except Exception as e:
+            print(f"Error during file upload: {e}")
+            return None
+        finally:
+            os.remove(filename)
+
+def uploads_image(img):
+    temp_path = "/tmp"
+    filename = os.path.join(temp_path, img.filename)
+    img.save(filename)
+
     url = "https://agrolyn.online/uploads-image/"
     with open(filename, 'rb') as img_file:
         files = {'img_upl': img_file}
         try:
             response = requests.post(url, files=files)
-            # Cek status response
             if response.status_code == 201:
                 print("Upload berhasil:", response.json().get("new_image"))
                 return response.json().get("new_image")
@@ -33,11 +52,9 @@ def uploads_image(img):
             print(f"Error during file upload: {e}")
             return None
         finally:
-            # Hapus file sementara setelah selesai
             os.remove(filename)
 
 def update_image(img_new, img_old):
-    # Simpan file baru ke direktori sementara
     temp_path = "/tmp"
     filename_new = os.path.join(temp_path, img_new.filename)
     img_new.save(filename_new)
@@ -47,12 +64,9 @@ def update_image(img_new, img_old):
     with open(filename_new, 'rb') as img_file:
         files = {'img_upl': img_file}
         try:
-            # Kirimkan file untuk diupdate
             response = requests.post(url, files=files)
             
-            # Cek status response dari server
             if response.status_code == 201:
-                # Ambil nama file baru yang diupload dari respons API
                 filename = response.json().get("new_image")
                 print("Update berhasil:", filename)
                 return filename
@@ -61,12 +75,10 @@ def update_image(img_new, img_old):
                 return None
 
         except requests.exceptions.RequestException as e:
-            # Tangani kesalahan dalam koneksi atau request
             print(f"Error during file update: {e}")
             return None
 
         finally:
-            # Hapus file sementara setelah selesai
             if os.path.exists(filename_new):
                 os.remove(filename_new)
 
@@ -76,7 +88,6 @@ def delete_image(img_name):
     try:
         response = requests.get(url)
         if response.status_code == 201:
-            # Return pesan berhasil
             return "Gambar berhasil dihapus dari Agrolyn."
         elif response.status_code == 404:
             return "Gagal menghapus gambar. Gambar tidak ditemukan."
