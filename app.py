@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -264,13 +264,17 @@ def update_product(product_id):
 def delete_product(product_id):
     return ecommerce_controller.delete_product(product_id)
 
-######################################################################
-#################### AI Prediction Endpoint ##########################
-######################################################################
+#####################################################################
+################### AI Prediction Endpoint ##########################
+#####################################################################
 
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     return detection_controller.predict()
+# @app.route('/corn-disease-predict', methods=['POST'])
+# def corn_disease_predict():
+#     return detection_controller.corn_disease_predict()
+
+# @app.route('/rice-disease-predict', methods=['POST'])
+# def rice_disease_predict():
+#     return detection_controller.rice_disease_predict()
 
 if __name__ == "__main__":
     app.run(debug=True)
