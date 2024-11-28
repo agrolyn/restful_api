@@ -2117,24 +2117,22 @@ paths:
                 example: "Database connection failed."
 
   /corn-disease-predict:
-    post:
+    get:
       tags:
         - "AI plant disease detection"
-      summary: "Predict corn diseases from an uploaded image"
-      description: "Endpoint to analyze an uploaded image and predict diseases affecting corn."
-      consumes:
-        - multipart/form-data
+      summary: "Predict corn diseases from query parameters"
+      description: "Endpoint to analyze query parameters and predict diseases affecting corn."
       parameters:
         - name: Authorization
           in: header
           required: true
           type: string
           description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
-        - name: img_pred
-          in: formData
+        - name: corn-disease
+          in: query
           required: true
-          type: file
-          description: "Image file of the corn plant to be analyzed."
+          type: string
+          description: "Keyword(s) related to corn disease for prediction."
       responses:
         200:
           description: "Prediction successful."
@@ -2145,56 +2143,72 @@ paths:
                 type: string
                 example: "Sukses menampilkan hasil prediksi penyakit"
               prediction:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  dis_name:
-                    type: string
-                  dis_indo_name:
-                    type: string
-                  handling:
-                    type: string
-                  plant_types_id:
-                    type: integer
-                  description:
-                    type: string
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    dis_name:
+                      type: string
+                    dis_indo_name:
+                      type: string
+                    handling:
+                      type: string
+                    plant_types_id:
+                      type: integer
+                    description:
+                      type: string
         400:
-          description: "Image not found or invalid."
+          description: "Query parameter is missing or invalid."
           schema:
             type: object
             properties:
+              status:
+                type: string
+                example: "error"
               message:
                 type: string
-                example: "Gambar tidak ditemukan."
+                example: "Parameter query tidak boleh kosong."
         404:
-          description: "Prediction failed or no matching disease found."
+          description: "No matching disease found."
           schema:
             type: object
             properties:
               message:
                 type: string
                 example: "Gagal menampilkan hasil prediksi penyakit."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat deteksi penyakit tanaman."
+              error:
+                type: string
 
   /rice-disease-predict:
-    post:
+    get:
       tags:
         - "AI plant disease detection"
-      summary: "Predict rice diseases from an uploaded image"
-      description: "Endpoint to analyze an uploaded image and predict diseases affecting rice."
-      consumes:
-        - multipart/form-data
+      summary: "Predict rice diseases from query parameters"
+      description: "Endpoint to analyze query parameters and predict diseases affecting rice."
       parameters:
         - name: Authorization
           in: header
           required: true
           type: string
           description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
-        - name: img_pred
-          in: formData
+        - name: rice-disease
+          in: query
           required: true
-          type: file
-          description: "Image file of the rice plant to be analyzed."
+          type: string
+          description: "Keyword(s) related to rice disease for prediction."
       responses:
         200:
           description: "Prediction successful."
@@ -2205,34 +2219,53 @@ paths:
                 type: string
                 example: "Sukses menampilkan hasil prediksi penyakit"
               prediction:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  dis_name:
-                    type: string
-                  dis_indo_name:
-                    type: string
-                  handling:
-                    type: string
-                  plant_types_id:
-                    type: integer
-                  description:
-                    type: string
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    dis_name:
+                      type: string
+                    dis_indo_name:
+                      type: string
+                    handling:
+                      type: string
+                    plant_types_id:
+                      type: integer
+                    description:
+                      type: string
         400:
-          description: "Image not found or invalid."
+          description: "Query parameter is missing or invalid."
           schema:
             type: object
             properties:
+              status:
+                type: string
+                example: "error"
               message:
                 type: string
-                example: "Gambar tidak ditemukan."
+                example: "Parameter query tidak boleh kosong."
         404:
-          description: "Prediction failed or no matching disease found."
+          description: "No matching disease found."
           schema:
             type: object
             properties:
               message:
                 type: string
                 example: "Gagal menampilkan hasil prediksi penyakit."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat deteksi penyakit tanaman."
+              error:
+                type: string
+
 

@@ -268,12 +268,12 @@ def delete_product(product_id):
 ################### AI Prediction Endpoint ##########################
 #####################################################################
 
-@app.route('/corn-disease-predict', methods=['POST'])
+@app.route('/corn-disease-predict', methods=['GET'])
 @jwt_required()
 def corn_disease_predict():
     return detection_controller.corn_disease_detection()
 
-@app.route('/rice-disease-predict', methods=['POST'])
+@app.route('/rice-disease-predict', methods=['GET'])
 @jwt_required()
 def rice_disease_predict():
     return detection_controller.rice_disease_detection()
