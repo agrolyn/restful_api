@@ -12,3 +12,4 @@ Flask-JWT-Extended
 Flask-Mail
 requests
 Pillow
+flask-cors
