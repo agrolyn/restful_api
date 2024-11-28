@@ -14,7 +14,7 @@ def predict_plant_disease(img, plant_type):
     filename = os.path.join(temp_path, img.filename)
     img.save(filename)
 
-    url = f"http://phbtegal.com:5039/{plant_type}-disease-predict"
+    url = f"http://phbtegal.com:5035/{plant_type}-disease-predict"
     with open(filename, 'rb') as img_file:
         files = {'img_pred': img_file}
         try:
