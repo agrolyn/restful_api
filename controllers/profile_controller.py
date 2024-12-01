@@ -2,38 +2,49 @@ from datetime import *
 from flask import *
 from flask_jwt_extended import get_jwt_identity
 from models.models import *
+from utils import image_uploaded
+from sqlalchemy.exc import SQLAlchemyError
     
 def edit_profile():
-    user_identity = get_jwt_identity()
-    user_id = user_identity['id']
+    try:
+        user_identity = get_jwt_identity()
+        user_id = user_identity.get("id")
+        user_me = Users.query.get(user_id)
 
-    data = request.get_json()
-    name = data.get("name")
-    address = data.get("address")
-    phone_number = data.get("phone_number")
+        name = request.form["name"]
+        address = request.form["address"]
+        phone_number = request.form["phone_number"]
+        img_p = request.files.get('img_profile')
 
-    update_fields = {}
-    if name is not None:
-        update_fields["name"] = name
-    if address is not None:
-        update_fields["address"] = address
-    if phone_number is not None:
-        update_fields["phone_number"] = phone_number
+        if name is not None:
+            user_me.name = name
+        if address is not None:
+            user_me.address = address
+        if phone_number is not None:
+            user_me.phone_number = phone_number
 
-    # Memeriksa apakah ada field yang ingin di-update
-    if not update_fields:
-        return jsonify({"message": "Tidak ada bidang yang valid untuk diperbarui."}), 400
+        if img_p:
+            filename_img = image_uploaded.uploads_image(img_p)
+            if not filename_img:
+                return jsonify({
+                    "message": "Gagal mengunggah gambar."
+                }), 500
 
-    # Mengambil user berdasarkan user_id
-    user = Users.query.get(user_id)
-    if user is None:
-        return jsonify({"message": "Pengguna tidak ditemukan."}), 404
+            # Hapus gambar lama jika ada
+            if user_me.img_profile:
+                old_filename = user_me.img_profile.split('/')[-1]
+                image_uploaded.delete_image(old_filename)
 
-    # Melakukan update pada field yang diberikan
-    for key, value in update_fields.items():
-        setattr(user, key, value)
+            user_me.img_profile = f"https://agrolyn.online/static/uploads/{filename_img}"
 
-    # Menyimpan perubahan ke database
-    db.session.commit()
+        if user_me is None:
+            return jsonify({"message": "Pengguna tidak ditemukan."}), 404
 
-    return jsonify({"message": "Profil berhasil diperbarui."}), 200
+        # Menyimpan perubahan ke database
+        db.session.commit()
+
+        return jsonify({"message": "Profil berhasil diperbarui."}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({'status': 'error', 'message': 'Kesalahan saat mengupdate profil', 'error': str(e)}), 500

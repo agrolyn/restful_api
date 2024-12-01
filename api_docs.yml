@@ -497,39 +497,79 @@ paths:
       tags:
         - "profile"
       summary: "Edit user profile"
-      description: "Endpoint for updating user's profile information."
+      description: "Endpoint for updating user's profile information, including optional profile picture upload."
       consumes:
-        - application/json
+        - multipart/form-data
       parameters:
         - name: Authorization
           in: header
           required: true
           type: string
           description: "JWT token for authorization (e.g., 'Bearer <access_token>')"
-        - in: body
-          name: profile
-          required: true
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-                description: "User's updated name"
-              address:
-                type: string
-                description: "User's updated address"
-              phone_number:
-                type: string
-                description: "User's updated phone number"
+        - in: formData
+          name: name
+          type: string
+          description: "User's updated name"
+        - in: formData
+          name: address
+          type: string
+          description: "User's updated address"
+        - in: formData
+          name: phone_number
+          type: string
+          description: "User's updated phone number"
+        - in: formData
+          name: img_profile
+          type: file
+          description: "New profile image file to upload"
       responses:
         200:
           description: "Profile updated successfully"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Profil berhasil diperbarui."
         400:
           description: "No valid fields to update"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "No valid fields to update."
         404:
           description: "User not found"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Pengguna tidak ditemukan."
         401:
           description: "Unauthorized access"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Unauthorized access."
+        500:
+          description: "Error while uploading new image or updating profile"
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat mengupdate profil"
+              error:
+                type: string
+                example: "Detail error"
+
   /community/questions/:
     get:
       tags:
