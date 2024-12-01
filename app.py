@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller, history_detection_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -206,7 +206,7 @@ def del_question(question_id):
     return community_controller.delete_q(question_id)
 
 # CRUD Community Answer by Question Id
-@app.route("/community/answer/new/<question_id>/", methods=["POST"])
+@app.route("/community/answer/new/<int:question_id>/", methods=["POST"])
 @jwt_required()
 def new_ans(question_id):
     return community_controller.new_ans(question_id)
@@ -268,15 +268,35 @@ def delete_product(product_id):
 ################### AI Prediction Endpoint ##########################
 #####################################################################
 
-@app.route('/corn-disease-predict', methods=['GET'])
+@app.route('/corn-disease-predict/<string:disease>/', methods=['POST'])
 @jwt_required()
-def corn_disease_predict():
-    return detection_controller.corn_disease_detection()
+def corn_disease_predict(disease):
+    return detection_controller.disease_detection(disease, "corn")
 
-@app.route('/rice-disease-predict', methods=['GET'])
+@app.route('/rice-disease-predict/<string:disease>/', methods=['POST'])
 @jwt_required()
-def rice_disease_predict():
-    return detection_controller.rice_disease_detection()
+def rice_disease_predict(disease):
+    return detection_controller.disease_detection(disease, "rice")
+
+@app.route('/history/detection-history/', methods=['GET'])
+@jwt_required()
+def history_detection():
+    return history_detection_controller.get_all_history()
+
+@app.route('/history/detection-history/<int:id_history>/', methods=['GET'])
+@jwt_required()
+def detail_history_detection(id_history):
+    return history_detection_controller.get_detail_history(id_history)
+
+@app.route('/history/detection-history/delete-history/<int:id_detection>/', methods=['DELETE'])
+@jwt_required()
+def delete_history_detection(id_detection):
+    return history_detection_controller.delete_detection_by_id(id_detection)
+
+@app.route('/history/detection-history/delete-all-history/', methods=['DELETE'])
+@jwt_required()
+def delete_all_history_detection():
+    return history_detection_controller.delete_all_detections()
 
 if __name__ == "__main__":
     app.run(debug=True)

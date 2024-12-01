@@ -337,7 +337,7 @@ class DetectionHistory(db.Model):
     __tablename__ = 'detection_histories'
     id = db.Column(db.Integer, primary_key=True)
     img_detection = db.Column(db.String(255), nullable=False)
-    released_date = db.Column(db.DateTime, nullable=False)
+    history_date = db.Column(db.DateTime, nullable=False)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     plant_dis_id = db.Column(db.Integer, db.ForeignKey('plant_dis.id'), nullable=False)
 
@@ -349,13 +349,13 @@ class DetectionHistory(db.Model):
         return {
             'id': self.id,
             'img_detection': self.img_detection,
-            'released_date': self.released_date,
+            'history_date': self.history_date,
             'users_id': self.users_id,
             'plant_dis_id': self.plant_dis_id
         }
 
     def __repr__(self):
-        return f"DetectionHisory('{self.released_date}')"
+        return f"DetectionHisory('{self.history_date}')"
 
 class Reviews(db.Model):
     __tablename__ = 'reviews'

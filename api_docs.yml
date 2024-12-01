@@ -2116,26 +2116,33 @@ paths:
                 type: string
                 example: "Database connection failed."
 
-  /corn-disease-predict:
-    get:
+  /corn-disease-predict/{disease}/:
+    post:
       tags:
         - "AI plant disease detection"
-      summary: "Predict corn diseases from query parameters"
-      description: "Endpoint to analyze query parameters and predict diseases affecting corn."
+      summary: "Predict corn diseases"
+      description: "Endpoint to predict diseases for corn plants based on the provided keyword and image."
+      consumes:
+        - multipart/form-data
       parameters:
         - name: Authorization
           in: header
           required: true
           type: string
           description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
-        - name: corn-disease
-          in: query
+        - name: disease
+          in: path
           required: true
           type: string
-          description: "Keyword(s) related to corn disease for prediction."
+          description: "Disease keyword to search for (e.g., 'blight')."
+        - name: img_upl
+          in: formData
+          required: true
+          type: file
+          description: "Image of the corn plant for disease detection."
       responses:
         200:
-          description: "Prediction successful."
+          description: "Disease prediction successful."
           schema:
             type: object
             properties:
@@ -2149,35 +2156,38 @@ paths:
                   properties:
                     id:
                       type: integer
+                      example: 1
                     dis_name:
                       type: string
+                      example: "Blight Disease"
                     dis_indo_name:
                       type: string
-                    handling:
-                      type: string
-                    plant_types_id:
-                      type: integer
+                      example: "Penyakit Hawar Daun"
                     description:
                       type: string
+                      example: "A fungal disease affecting corn leaves."
+                    handling:
+                      type: string
+                      example: "Gunakan fungisida berbasis tembaga untuk perawatan awal."
+                    plant_types_id:
+                      type: integer
+                      example: 1
         400:
-          description: "Query parameter is missing or invalid."
+          description: "Missing image or invalid data."
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: "error"
               message:
                 type: string
-                example: "Parameter query tidak boleh kosong."
+                example: "Tidak ada file yang diunggah"
         404:
-          description: "No matching disease found."
+          description: "Disease not found."
           schema:
             type: object
             properties:
               message:
                 type: string
-                example: "Gagal menampilkan hasil prediksi penyakit."
+                example: "Gagal menampilkan hasil prediksi penyakit"
         500:
           description: "Internal server error."
           schema:
@@ -2188,30 +2198,38 @@ paths:
                 example: "error"
               message:
                 type: string
-                example: "Kesalahan saat deteksi penyakit tanaman."
+                example: "Kesalahan saat deteksi penyakit tanaman"
               error:
                 type: string
+                example: "Database connection failed."
 
-  /rice-disease-predict:
-    get:
+  /rice-disease-predict/{disease}/:
+    post:
       tags:
         - "AI plant disease detection"
-      summary: "Predict rice diseases from query parameters"
-      description: "Endpoint to analyze query parameters and predict diseases affecting rice."
+      summary: "Predict rice diseases"
+      description: "Endpoint to predict diseases for rice plants based on the provided keyword and image."
+      consumes:
+        - multipart/form-data
       parameters:
         - name: Authorization
           in: header
           required: true
           type: string
           description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
-        - name: rice-disease
-          in: query
+        - name: disease
+          in: path
           required: true
           type: string
-          description: "Keyword(s) related to rice disease for prediction."
+          description: "Disease keyword to search for (e.g., 'blast')."
+        - name: img_upl
+          in: formData
+          required: true
+          type: file
+          description: "Image of the rice plant for disease detection."
       responses:
         200:
-          description: "Prediction successful."
+          description: "Disease prediction successful."
           schema:
             type: object
             properties:
@@ -2225,35 +2243,38 @@ paths:
                   properties:
                     id:
                       type: integer
+                      example: 2
                     dis_name:
                       type: string
+                      example: "Blast Disease"
                     dis_indo_name:
                       type: string
-                    handling:
-                      type: string
-                    plant_types_id:
-                      type: integer
+                      example: "Penyakit Busuk Leher"
                     description:
                       type: string
+                      example: "A fungal disease affecting rice leaves."
+                    handling:
+                      type: string
+                      example: "Lakukan pengeringan sawah secara berkala."
+                    plant_types_id:
+                      type: integer
+                      example: 2
         400:
-          description: "Query parameter is missing or invalid."
+          description: "Missing image or invalid data."
           schema:
             type: object
             properties:
-              status:
-                type: string
-                example: "error"
               message:
                 type: string
-                example: "Parameter query tidak boleh kosong."
+                example: "Tidak ada file yang diunggah"
         404:
-          description: "No matching disease found."
+          description: "Disease not found."
           schema:
             type: object
             properties:
               message:
                 type: string
-                example: "Gagal menampilkan hasil prediksi penyakit."
+                example: "Gagal menampilkan hasil prediksi penyakit"
         500:
           description: "Internal server error."
           schema:
@@ -2264,8 +2285,267 @@ paths:
                 example: "error"
               message:
                 type: string
-                example: "Kesalahan saat deteksi penyakit tanaman."
+                example: "Kesalahan saat deteksi penyakit tanaman"
               error:
                 type: string
+                example: "Database connection failed."
+
+  /history/detection-history/:
+    get:
+      tags:
+        - "AI plant disease detection"
+      summary: "Get all detection history"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "List of all detection histories for the authenticated user."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "success"
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "The ID of the detection history."
+                    history_date:
+                      type: string
+                      format: date-time
+                      description: "The date and time when the detection occurred."
+                    disease_name:
+                      type: string
+                      description: "The scientific name of the detected disease."
+                    disease_indonesian_name:
+                      type: string
+                      description: "The Indonesian name of the detected disease."
+                    image_detection:
+                      type: string
+                      description: "URL of the image used for detection."
+        404:
+          description: "No detection history found for the user."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Tidak ada riwayat deteksi tersedia."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data riwayat deteksi."
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /history/detection-history/{id_history}/:
+    get:
+      tags:
+        - "AI plant disease detection"
+      summary: "Get detection history details by ID"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: id_history
+          in: path
+          required: true
+          type: integer
+          description: "The ID of the detection history to retrieve."
+      responses:
+        200:
+          description: "Details of the detection history for the specified ID."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "success"
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "The ID of the detection history."
+                  history_date:
+                    type: string
+                    format: date-time
+                    description: "The date and time when the detection occurred."
+                  disease_name:
+                    type: string
+                    description: "The scientific name of the detected disease."
+                  disease_indonesian_name:
+                    type: string
+                    description: "The Indonesian name of the detected disease."
+                  image_detection:
+                    type: string
+                    description: "URL of the image used for detection."
+                  description:
+                    type: string
+                    description: "Description of the disease."
+                  handling:
+                    type: string
+                    description: "Suggested handling or treatment for the disease."
+        404:
+          description: "Detection history not found or does not belong to the user."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Riwayat deteksi tidak ditemukan atau tidak milik Anda."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data riwayat deteksi."
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /history/detection-history/delete-history/{id_detection}/:
+    delete:
+      tags:
+        - "AI plant disease detection"
+      summary: "Delete a specific detection history by ID"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: id_detection
+          in: path
+          required: true
+          type: integer
+          description: "The ID of the detection history to delete."
+      responses:
+        200:
+          description: "Detection history successfully deleted."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "success"
+              message:
+                type: string
+                example: "Deteksi berhasil dihapus."
+        401:
+          description: "Unauthorized access or invalid user."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Pengguna tidak valid."
+        404:
+          description: "Detection history not found or not owned by the user."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Deteksi tidak ditemukan atau tidak milik Anda."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat menghapus deteksi."
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /history/detection-history/delete-all-history/:
+    delete:
+      tags:
+        - "AI plant disease detection"
+      summary: "Delete all detection histories for the current user"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "All detection histories successfully deleted."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "success"
+              message:
+                type: string
+                example: "Semua deteksi Anda berhasil dihapus."
+        401:
+          description: "Unauthorized access or invalid user."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Pengguna tidak valid."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "error"
+              message:
+                type: string
+                example: "Kesalahan saat menghapus semua deteksi."
+              error:
+                type: string
+                example: "Database connection failed."
+
 
 
