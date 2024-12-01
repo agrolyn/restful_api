@@ -856,6 +856,7 @@ paths:
                   status:
                     type: string
                     description: "Response status"
+                    example: "success"
                   message:
                     type: string
                     description: "Status message"
@@ -869,20 +870,31 @@ paths:
                         id:
                           type: integer
                           description: "The ID of the question"
-                        title_q:
+                        username:
+                          type: string
+                          description: "The username of the user who posted the question"
+                        user_profile:
+                          type: string
+                          description: "The profile image URL of the user"
+                        question_type:
+                          type: string
+                          description: "The type/category of the question (e.g., padi, jagung)"
+                        title_question:
                           type: string
                           description: "The title of the question"
-                        description:
+                        like_num:
+                          type: integer
+                          description: "The number of likes the question has"
+                        question_thumbnail:
                           type: string
-                          description: "The detailed description of the question"
-                        created_at:
+                          description: "The thumbnail image associated with the question"
+                        number_of_answer:
+                          type: integer
+                          description: "The number of answers the question has"
+                        released_date:
                           type: string
                           format: date-time
-                          description: "The date and time when the question was created"
-                        updated_at:
-                          type: string
-                          format: date-time
-                          description: "The date and time when the question was last updated"
+                          description: "The date and time when the question was posted"
         400:
           description: "Invalid query parameter"
           content:

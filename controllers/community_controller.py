@@ -150,20 +150,42 @@ def search_community_question():
         
         # Jika tidak ada pertanyaan ditemukan
         if not matching_questions:
-            return jsonify({'status': 'error', 'message': 'Pertanyaan tidak ditemukan'}), 404
+            return jsonify({
+                "message": "Tidak ada data pertanyaan komunitas yang sesuai dengan pencarian",
+                "data": []
+            }), 200
         
-        # Konversi hasil query ke dalam bentuk dictionary
-        questions = [question.to_dict() for question in matching_questions]
+        # Proses data pertanyaan
+        community = []
+        for question in matching_questions:
+            community.append(
+                {
+                    "id": question.id,
+                    "username": question.users.name if question.users else None,
+                    "user_profile": question.users.img_profile if question.users else None,
+                    "question_type": question.plant_types.plant_name if question.plant_types else None,
+                    "title_question": question.title_q,
+                    "like_num": question.like_num,
+                    "question_thumbnail": question.img_q,
+                    "number_of_answer": len(question.disccus),
+                    "released_date": question.released_date
+                }
+            )
         
+        # Mengembalikan hasil pencarian dengan format yang sama
         return jsonify({
             "status": "success",
-            "message": f"Sukses menemukan {len(questions)} pertanyaan komunitas berdasarkan pencarian",
-            "data": questions
+            "message": f"Sukses menemukan {len(community)} pertanyaan komunitas berdasarkan pencarian",
+            "data": community
         }), 200
 
     except SQLAlchemyError as e:
         # Tangani jika terjadi error dengan database
-        return jsonify({"status": "error", "message": "Kesalahan saat mencari pertanyaan komunitas", "error": str(e)}), 500
+        return jsonify({
+            "status": "error", 
+            "message": "Kesalahan saat mencari pertanyaan komunitas", 
+            "error": str(e)
+        }), 500
     
 ######################################################################
 ###################### Like Dislike Endpoint #########################
