@@ -152,6 +152,7 @@ class Users(db.Model):
     disccus = relationship('Disccus', backref='users', lazy=True)
     orders = relationship('Orders', backref='users', lazy=True)
     reviews = relationship('Reviews', backref='users', lazy=True)
+    review_users = relationship('ReviewUsers', backref='users', lazy=True)
     transactions = relationship('Transactions', backref='users', lazy=True)
 
     def to_dict(self):
@@ -397,3 +398,27 @@ class Transactions(db.Model):
 
     def __repr__(self):
         return f"Transactions('{self.transaction_date}', '{self.transaction_amount}')"
+
+class ReviewUsers(db.Model):
+    __tablename__ = 'review_users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    review = db.Column(db.String(255), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    type_review = db.Column(db.String(25), nullable=False)
+    released_date = db.Column(db.DateTime, nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'users_id': self.users_id,
+            'review': self.review,
+            'rating': self.rating,
+            'type_review': self.type_review,
+            'released_date': self.released_date,
+        }
+
+    def __repr__(self):
+        return f"Review Users('{self.released_date}', '{self.released_date}')"

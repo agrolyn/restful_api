@@ -21,6 +21,8 @@ tags:
     description: "Endpoints related to video education"
   - name: "AI plant disease detection"
     description: "Endpoints related to AI plant disease detection"
+  - name: "Sentiment Analysis"
+    description: "Endpoints related to Sentiment Analysis"
 
 paths:
   /refresh-token/:
@@ -1167,7 +1169,7 @@ paths:
               error:
                 type: string
                 example: "Database connection failed."
-      
+
   /community/question/new/:
     post:
       tags:
@@ -1322,7 +1324,7 @@ paths:
           description: "Question not found"
         500:
           description: "Internal server error"
-  
+
   /community/question/delete/{question_id}/:
     delete:
       tags:
@@ -2187,7 +2189,7 @@ paths:
           required: true
           type: string
           description: "Disease keyword to search for (e.g., 'blight')."
-        - name: img_upl
+        - name: img_pred
           in: formData
           required: true
           type: file
@@ -2274,7 +2276,7 @@ paths:
           required: true
           type: string
           description: "Disease keyword to search for (e.g., 'blast')."
-        - name: img_upl
+        - name: img_pred
           in: formData
           required: true
           type: file
@@ -2599,5 +2601,57 @@ paths:
                 type: string
                 example: "Database connection failed."
 
-
-
+  /app/review/:
+    post:
+      tags:
+        - Sentiment Analysis
+      summary: Add Review for Application
+      description: Allows users to submit a review for the application.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              review:
+                type: string
+                description: "The review content."
+                example: "This is a sample review."
+              rating:
+                type: integer
+                description: "rating of review"
+                example: 1
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: JWT token for authorization (e.g., 'Bearer <access_token>').
+      responses:
+        200:
+          description: Review added successfully.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Berhasil menambahkan ulasan aplikasi."
+        404:
+          description: User not found.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Pengguna tidak valid."
+        500:
+          description: Internal server error.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengulas aplikasi."
+              error:
+                type: string
+                example: "Error api"

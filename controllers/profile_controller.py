@@ -48,3 +48,54 @@ def edit_profile():
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({'status': 'error', 'message': 'Kesalahan saat mengupdate profil', 'error': str(e)}), 500
+    
+def rating_users():
+    try:
+        user_identity = get_jwt_identity()
+        users_id = user_identity.get("id")
+        data = request.get_json()
+        datenow = datetime.now()
+
+        name = user_identity.get("name")
+        review = data.get("review")
+        rating = int(data.get("rating"))
+        released_date = datenow.strftime('%Y-%m-%d %H:%M:%S')
+        type_review = ''
+
+        if rating == 1:
+            type_review = "Komentar Negatif"
+        elif rating == 2:
+            type_review = "Komentar Negatif"
+        elif rating == 3:
+            type_review = "Komentar Netral"
+        elif rating == 4:
+            type_review = "Komentar Positif"
+        elif rating == 5:
+            type_review = "Komentar Positif"
+
+        new_review_user = ReviewUsers(
+            name=name,
+            users_id=users_id,
+            review=review,
+            rating=rating,
+            type_review=type_review,
+            released_date=released_date    
+        )
+
+        db.session.add(new_review_user)
+
+        # Menyimpan perubahan ke database
+        db.session.commit()
+
+        if users_id is None:
+            return jsonify({"message": "Pengguna tidak valid."}), 404
+        else:
+            # Assuming you want to return the created review details
+            return jsonify({
+                "message": "Berhasil menambahkan ulasan aplikasi.",
+                "review": new_review_user.to_dict()
+            }), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({'status': 'error', 'message': 'Kesalahan saat mengulas aplikasi', 'error': str(e)}), 500

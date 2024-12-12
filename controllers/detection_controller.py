@@ -15,7 +15,7 @@ def disease_detection(disease, plant_type):
         user_id = jwt_data.get("id")
 
         # Ambil file gambar dari request
-        img_det = request.files.get("img_upl")
+        img_det = request.files.get("img_pred")
         if not img_det:
             return jsonify({"message": "Tidak ada file yang diunggah"}), 400
 

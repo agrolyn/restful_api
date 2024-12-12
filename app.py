@@ -298,5 +298,13 @@ def delete_history_detection(id_detection):
 def delete_all_history_detection():
     return history_detection_controller.delete_all_detections()
 
+#####################################################################
+###################### Sentiment Analysis ###########################
+#####################################################################
+@app.route('/app/review/', methods=["POST"])
+@jwt_required()
+def add_review():
+    return profile_controller.rating_users()
+
 if __name__ == "__main__":
     app.run(debug=True)
