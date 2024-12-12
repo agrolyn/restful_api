@@ -5,11 +5,17 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import and_
 from utils import image_uploaded
 from models.models import PlantDis, DetectionHistory, db
+from urllib.parse import unquote
 
 def disease_detection(disease, plant_type):
     try:
+        # Decode parameter 'disease' dari URL
+        decoded_disease = unquote(disease)
+
+        # Tetapkan plant_type_id berdasarkan jenis tanaman
         plant_type_id = 2 if plant_type == "rice" else 1
 
+        # Ambil waktu sekarang dan data pengguna dari JWT
         datenow = datetime.now()
         jwt_data = get_jwt_identity()
         user_id = jwt_data.get("id")
@@ -20,15 +26,15 @@ def disease_detection(disease, plant_type):
             return jsonify({"message": "Tidak ada file yang diunggah"}), 400
 
         # Pisahkan kata kunci untuk pencarian penyakit
-        keywords = disease.split()
+        keywords = decoded_disease.split()
         filters = [PlantDis.dis_name.ilike(f"%{kw}%") for kw in keywords]
-        
+
         # Filter data penyakit berdasarkan jenis tanaman dan kata kunci
         data = PlantDis.query.filter(and_(*filters), PlantDis.plant_types_id == plant_type_id).all()
         data_predict = [pred.to_dict() for pred in data]
 
         if not data_predict:
-            return jsonify({"message": "Gagal menampilkan hasil prediksi penyakit"}), 404
+            return jsonify({"message": "Penyakit tidak ditemukan untuk tanaman ini"}), 404
 
         # Unggah gambar dan catat nama file
         filename = image_uploaded.uploads_image(img_det)
@@ -48,7 +54,7 @@ def disease_detection(disease, plant_type):
         # Kembalikan hasil prediksi
         return jsonify({
             "message": "Sukses menampilkan hasil prediksi penyakit",
-            "prediction": data_predict
+            "prediction": data_predict[0]
         }), 200
 
     except SQLAlchemyError as e:
@@ -58,3 +64,4 @@ def disease_detection(disease, plant_type):
             "message": "Kesalahan saat deteksi penyakit tanaman",
             "error": str(e)
         }), 500
+

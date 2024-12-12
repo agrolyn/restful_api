@@ -2175,7 +2175,10 @@ paths:
       tags:
         - "AI plant disease detection"
       summary: "Predict corn diseases"
-      description: "Endpoint to predict diseases for corn plants based on the provided keyword and image."
+      description: |
+        Endpoint untuk memprediksi penyakit pada tanaman jagung berdasarkan kata kunci penyakit yang diberikan dan gambar tanaman. 
+        Kata kunci penyakit dalam path URL dapat mengandung karakter spesial (seperti spasi yang di-encode sebagai `%20`) 
+        dan akan otomatis di-decode oleh server.
       consumes:
         - multipart/form-data
       parameters:
@@ -2183,20 +2186,22 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+          description: "JWT token untuk otorisasi (contoh: 'Bearer <access_token>')."
         - name: disease
           in: path
           required: true
           type: string
-          description: "Disease keyword to search for (e.g., 'blight')."
+          description: |
+            Kata kunci penyakit yang akan dicari (contoh: 'common rust'). 
+            Pastikan nama penyakit sesuai atau mengandung sebagian kata dari nama penyakit yang dicari.
         - name: img_pred
           in: formData
           required: true
           type: file
-          description: "Image of the corn plant for disease detection."
+          description: "Gambar tanaman jagung untuk deteksi penyakit."
       responses:
         200:
-          description: "Disease prediction successful."
+          description: "Berhasil menampilkan hasil prediksi penyakit."
           schema:
             type: object
             properties:
@@ -2204,30 +2209,28 @@ paths:
                 type: string
                 example: "Sukses menampilkan hasil prediksi penyakit"
               prediction:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      example: 1
-                    dis_name:
-                      type: string
-                      example: "Blight Disease"
-                    dis_indo_name:
-                      type: string
-                      example: "Penyakit Hawar Daun"
-                    description:
-                      type: string
-                      example: "A fungal disease affecting corn leaves."
-                    handling:
-                      type: string
-                      example: "Gunakan fungisida berbasis tembaga untuk perawatan awal."
-                    plant_types_id:
-                      type: integer
-                      example: 1
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  dis_name:
+                    type: string
+                    example: "Blight Disease"
+                  dis_indo_name:
+                    type: string
+                    example: "Penyakit Hawar Daun"
+                  description:
+                    type: string
+                    example: "Penyakit jamur yang menyerang daun jagung."
+                  handling:
+                    type: string
+                    example: "Gunakan fungisida berbasis tembaga untuk perawatan awal."
+                  plant_types_id:
+                    type: integer
+                    example: 1
         400:
-          description: "Missing image or invalid data."
+          description: "Gambar tidak ditemukan atau data tidak valid."
           schema:
             type: object
             properties:
@@ -2235,15 +2238,15 @@ paths:
                 type: string
                 example: "Tidak ada file yang diunggah"
         404:
-          description: "Disease not found."
+          description: "Penyakit tidak ditemukan."
           schema:
             type: object
             properties:
               message:
                 type: string
-                example: "Gagal menampilkan hasil prediksi penyakit"
+                example: "Penyakit tidak ditemukan untuk tanaman ini"
         500:
-          description: "Internal server error."
+          description: "Kesalahan server internal."
           schema:
             type: object
             properties:
@@ -2262,7 +2265,10 @@ paths:
       tags:
         - "AI plant disease detection"
       summary: "Predict rice diseases"
-      description: "Endpoint to predict diseases for rice plants based on the provided keyword and image."
+      description: |
+        Endpoint untuk memprediksi penyakit pada tanaman padi berdasarkan kata kunci penyakit yang diberikan dan gambar tanaman. 
+        Kata kunci penyakit dalam path URL dapat mengandung karakter spesial (seperti spasi yang di-encode sebagai `%20`) 
+        dan akan otomatis di-decode oleh server.
       consumes:
         - multipart/form-data
       parameters:
@@ -2270,20 +2276,22 @@ paths:
           in: header
           required: true
           type: string
-          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+          description: "JWT token untuk otorisasi (contoh: 'Bearer <access_token>')."
         - name: disease
           in: path
           required: true
           type: string
-          description: "Disease keyword to search for (e.g., 'blast')."
+          description: |
+            Kata kunci penyakit yang akan dicari (contoh: 'blast'). 
+            Pastikan nama penyakit sesuai atau mengandung sebagian kata dari nama penyakit yang dicari.
         - name: img_pred
           in: formData
           required: true
           type: file
-          description: "Image of the rice plant for disease detection."
+          description: "Gambar tanaman padi untuk deteksi penyakit."
       responses:
         200:
-          description: "Disease prediction successful."
+          description: "Berhasil menampilkan hasil prediksi penyakit."
           schema:
             type: object
             properties:
@@ -2291,30 +2299,28 @@ paths:
                 type: string
                 example: "Sukses menampilkan hasil prediksi penyakit"
               prediction:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      example: 2
-                    dis_name:
-                      type: string
-                      example: "Blast Disease"
-                    dis_indo_name:
-                      type: string
-                      example: "Penyakit Busuk Leher"
-                    description:
-                      type: string
-                      example: "A fungal disease affecting rice leaves."
-                    handling:
-                      type: string
-                      example: "Lakukan pengeringan sawah secara berkala."
-                    plant_types_id:
-                      type: integer
-                      example: 2
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 2
+                  dis_name:
+                    type: string
+                    example: "Blast Disease"
+                  dis_indo_name:
+                    type: string
+                    example: "Penyakit Busuk Leher"
+                  description:
+                    type: string
+                    example: "Penyakit jamur yang menyerang daun padi."
+                  handling:
+                    type: string
+                    example: "Lakukan pengeringan sawah secara berkala."
+                  plant_types_id:
+                    type: integer
+                    example: 2
         400:
-          description: "Missing image or invalid data."
+          description: "Gambar tidak ditemukan atau data tidak valid."
           schema:
             type: object
             properties:
@@ -2322,15 +2328,15 @@ paths:
                 type: string
                 example: "Tidak ada file yang diunggah"
         404:
-          description: "Disease not found."
+          description: "Penyakit tidak ditemukan."
           schema:
             type: object
             properties:
               message:
                 type: string
-                example: "Gagal menampilkan hasil prediksi penyakit"
+                example: "Penyakit tidak ditemukan untuk tanaman ini"
         500:
-          description: "Internal server error."
+          description: "Kesalahan server internal."
           schema:
             type: object
             properties:
