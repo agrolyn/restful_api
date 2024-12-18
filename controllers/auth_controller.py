@@ -240,67 +240,26 @@ def forgot_pwd(s, mail):
 
 def reset_pwd(token, s):
     if request.method == 'GET':
-        # HTML responsif untuk halaman konfirmasi email berhasil
-        html = render_template_string('''
-        <html>
-        <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-        </head>
-        <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
-            <div style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                <!-- Bagian logo -->
-                <div style="text-align: center; padding-bottom: 10px;">
-                    <img src="https://agrolyn.online/static/assets/favicon.png" alt="Agrolyn Logo" style="width: 80px; height: auto;">
-                </div>
-                <!-- Header dengan warna hijau untuk menandakan keberhasilan -->
-                <div style="background-color: #4CAF50; padding: 10px 20px; border-radius: 8px 8px 0 0; color: #ffffff; text-align: center;">
-                    <h2 style="margin: 0; font-size: 1.5rem;">Email Verified</h2>
-                </div>
-                <!-- Konten utama untuk menampilkan informasi -->
-                <div style="padding: 20px;">
-                    <p style="font-size: 1rem;">Your email has been successfully verified. You can now reset your password.</p>
-                    <!-- Menampilkan token -->
-                    <div style="margin-top: 20px;">
-                        <label for="token" style="display: block; margin-bottom: 8px; font-weight: bold;">Your Token:</label>
-                        <input type="text" id="token" value="{{ token }}" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; background-color: #f9f9f9;">
-                    </div>
-                    <!-- Tombol untuk menyalin token -->
-                    <button onclick="copyToken()" style="margin-top: 20px; background-color: #4CAF50; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem;">Copy Token</button>
-                </div>
-            </div>
-            <!-- JavaScript untuk menyalin token ke clipboard -->
-            <script>
-                function copyToken() {
-                    const tokenInput = document.getElementById('token');
-                    tokenInput.select();
-                    tokenInput.setSelectionRange(0, 99999); // Untuk perangkat mobile
-                    document.execCommand('copy');
-                    alert('Token copied to clipboard!');
-                }
-            </script>
-        </body>
-        </html>
-        ''', token=token)
-        return html, 200
+        return render_template('reset_password.html', token=token)
 
     elif request.method == 'POST':
-        # Coba memuat email dari token
         try:
+            # Verifikasi token
             email = s.loads(token, salt='reset-password', max_age=3600)
-        except:
-            return jsonify({'message': 'Tautan pengaturan ulang tidak valid atau telah kedaluwarsa.'}), 400
+        except Exception as e:
+            return render_template('reset_password.html', token=token, error="Link is invalid or expired.")
 
-        data = request.get_json()
+        new_password = request.json.get('new_password')  # Mengambil password baru dari JSON
         user = Users.query.filter_by(email=email).first()
-        
-        # Cek jika user ditemukan
-        if not user:
-            return jsonify({'message': 'Pengguna tidak ditemukan.'}), 404
 
-        # Setel ulang password
-        user.set_password(data.get('new_password'))
+        if not user:
+            return render_template('reset_password.html', token=token, error="User not found.")
+        
+        # Update password
+        user.set_password(new_password)
         db.session.commit()
-        return jsonify({'message': 'Kata sandi telah berhasil direset.'}), 200
+
+        return render_template('reset_password_success.html')
 
 
 def logout_acc():

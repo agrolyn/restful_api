@@ -1,6 +1,6 @@
 from datetime import timedelta
 import os
-from flask import Flask
+from flask import Flask, render_template
 from itsdangerous import URLSafeTimedSerializer
 from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller, history_detection_controller
 # from controllers import detection_controller
@@ -79,6 +79,10 @@ def forgot_password():
 @app.route('/reset_password/<token>/', methods=['GET', 'POST'])
 def reset_password(token):
     return auth_controller.reset_pwd(token, s)
+
+@app.route('/reset_password/success/', methods=["GET"])
+def resetpwd_success():
+    return render_template('reset_password_success.html')
 
 @app.route('/logout/', methods=['POST'])
 @jwt_required()
