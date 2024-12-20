@@ -9,14 +9,18 @@ from flask_migrate import Migrate
 from flasgger import Swagger
 from flask_jwt_extended import JWTManager, jwt_required
 from flask_mail import Mail
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+# Configure CORS
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Secret key for session management and jwt
 app.config["SECRET_KEY"] = os.urandom(24)
 app.config["JWT_SECRET_KEY"] = os.urandom(32)  # JWT secret key
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=14)
 
 # Database configuration
 DB_USERNAME = os.getenv('DB_USERNAME')
