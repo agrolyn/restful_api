@@ -420,5 +420,46 @@ class ReviewUsers(db.Model):
             'released_date': self.released_date,
         }
 
+
+class RecommendCategories(db.Model):
+    __tablename__ = 'recommend_category'
+    id = db.Column(db.Integer, primary_key=True)
+    label = db.Column(db.String(255), nullable=False)
+    thumbnail = db.Column(db.String(255), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'label': self.label,
+            'thumbnail': self.thumbnail,
+        }
+
     def __repr__(self):
-        return f"Review Users('{self.released_date}', '{self.released_date}')"
+        return f"Review Users('{self.label}', '{self.thumbnail}')"
+
+class Recommendations(db.Model):
+    __tablename__ = 'recommendations'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    thumbnail = db.Column(db.String(255), nullable=False)
+    ingredients = db.Column(db.Text, nullable=False)
+    steps = db.Column(db.Text, nullable=False)
+    recommend_cat_id = db.Column(db.Integer, db.ForeignKey('recommend_category.id'), nullable=False)
+
+    # Relationship
+    recommend_category = relationship('RecommendCategories', backref='recommendations', lazy=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'thumbnail': self.thumbnail,
+            'ingredients': self.ingredients,
+            'steps': self.steps,
+            'recommend_cat_id': self.recommend_cat_id,
+        }
+
+    def __repr__(self):
+        return f"Recommendations ('{self.title}', '{self.thumbnail}')"
