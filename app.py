@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask, render_template
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller, history_detection_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller, history_detection_controller, recom_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -19,8 +19,8 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 # Secret key for session management and jwt
 app.config["SECRET_KEY"] = os.urandom(24)
 app.config["JWT_SECRET_KEY"] = os.urandom(32)  # JWT secret key
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=14)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=3)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 
 # Database configuration
 DB_USERNAME = os.getenv('DB_USERNAME')
@@ -276,7 +276,20 @@ def delete_product(product_id):
 ################### Processed Recommendations #######################
 #####################################################################
 
+@app.route("/recommendation-categories/", methods=["GET"])
+@jwt_required()
+def recomcat():
+    return recom_controller.get_all_recom_cat()
 
+@app.route("/recommendations/<int:id_cat>/", methods=["GET"])
+@jwt_required()
+def recom_by_cat(id_cat):
+    return recom_controller.get_recom_by_cat(id_cat)
+
+@app.route("/recommendations/details/<int:id>/", methods=["GET"])
+@jwt_required()
+def det_recom(id):
+    return recom_controller.get_details_recom(id)    
 
 #####################################################################
 ################### AI Prediction Endpoint ##########################

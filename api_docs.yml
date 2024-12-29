@@ -23,6 +23,8 @@ tags:
     description: "Endpoints related to AI plant disease detection"
   - name: "Sentiment Analysis"
     description: "Endpoints related to Sentiment Analysis"
+  - name: "Recommendations"
+    description: "Endpoints related to Recommendations"
 
 paths:
   /refresh-token/:
@@ -2661,3 +2663,158 @@ paths:
               error:
                 type: string
                 example: "Error api"
+
+  /recommendation-categories/:
+    get:
+      tags:
+        - "Recommendations"
+      summary: "Get all recommendation categories"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+      responses:
+        200:
+          description: "A list of recommendation categories."
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "The category ID."
+                name:
+                  type: string
+                  description: "The name of the category."
+        404:
+          description: "No recommendation categories found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Tidak ada rekomendasi olahan tersedia."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data rekomendasi olahan."
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /recommendations/{id_cat}/:
+    get:
+      tags:
+        - "Recommendations"
+      summary: "Get recommendations by category"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: id_cat
+          in: path
+          required: true
+          type: integer
+          description: "The ID of the category to retrieve recommendations for."
+      responses:
+        200:
+          description: "A list of recommendations for the specified category."
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: "The recommendation ID."
+                title:
+                  type: string
+                  description: "The title of the recommendation."
+                description:
+                  type: string
+                  description: "The description of the recommendation."
+                img:
+                  type: string
+                  description: "URL of the recommendation image."
+        404:
+          description: "No recommendations found for the specified category."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Tidak ada rekomendasi olahan tersedia."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data rekomendasi olahan."
+              error:
+                type: string
+                example: "Database connection failed."
+
+  /recommendations/details/{id}/:
+    get:
+      tags:
+        - "Recommendations"
+      summary: "Get recommendation details"
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: "JWT token for authorization (e.g., 'Bearer <access_token>')."
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: "The ID of the recommendation to retrieve."
+      responses:
+        200:
+          description: "Details of the specified recommendation."
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: "The recommendation ID."
+              title:
+                type: string
+                description: "The title of the recommendation."
+              description:
+                type: string
+                description: "The description of the recommendation."
+              img:
+                type: string
+                description: "URL of the recommendation image."
+        404:
+          description: "Recommendation not found."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Rekomendasi olahan tidak ditemukan."
+        500:
+          description: "Internal server error."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Kesalahan saat mengambil data rekomendasi olahan."
+              error:
+                type: string
+                example: "Database connection failed."
