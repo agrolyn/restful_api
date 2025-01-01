@@ -54,7 +54,8 @@ def disease_detection(disease, plant_type):
         # Kembalikan hasil prediksi
         return jsonify({
             "message": "Sukses menampilkan hasil prediksi penyakit",
-            "prediction": data_predict[0]
+            "prediction": data_predict[0],
+            "img_detection": filename
         }), 200
 
     except SQLAlchemyError as e:

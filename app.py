@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask, render_template
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller, history_detection_controller, recom_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller, history_detection_controller, recom_controller, harvestcalc_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -332,6 +332,14 @@ def delete_all_history_detection():
 @jwt_required()
 def add_review():
     return profile_controller.rating_users()
+
+#####################################################################
+######################## Kalkulasi Panen ############################
+#####################################################################
+@app.route('/harvest-calculator/<string:plant>/', methods=["POST"])
+@jwt_required()
+def harvest_calc(plant):
+    return harvestcalc_controller.harvestcalc(plant)
 
 if __name__ == "__main__":
     app.run(debug=True)

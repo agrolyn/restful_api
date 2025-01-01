@@ -25,6 +25,8 @@ tags:
     description: "Endpoints related to Sentiment Analysis"
   - name: "Recommendations"
     description: "Endpoints related to Recommendations"
+  - name: "Harvest Calculation"
+    description: "Endpoints related to Harvest Calculation"
 
 paths:
   /refresh-token/:
@@ -2818,3 +2820,96 @@ paths:
               error:
                 type: string
                 example: "Database connection failed."
+
+  /harvest-calculator/{plant}/:
+    post:
+      tags:
+        - Harvest Calculation
+      summary: Calculate Harvest Estimation
+      description: Calculate the estimated harvest date, yield, and total price for a given crop (corn or rice) based on planting date and land area.
+      parameters:
+        - name: plant
+          in: path
+          required: true
+          type: string
+          description: The type of plant to calculate harvest for. Valid values are `corn` or `rice`.
+          enum: [corn, rice]
+          example: corn
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: JWT token for authorization (e.g., 'Bearer <access_token>').
+          example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              tanggal_tanam:
+                type: string
+                format: date
+                description: Planting date in YYYY-MM-DD format.
+                example: "2024-06-01"
+              luas_sawah:
+                type: number
+                format: float
+                description: Land area in square meters.
+                example: 1000.5
+      responses:
+        200:
+          description: Harvest estimation calculated successfully.
+          schema:
+            type: object
+            properties:
+              tanggal_panen:
+                type: string
+                format: date
+                description: Estimated harvest date.
+                example: "2024-09-09"
+              sisa_hari:
+                type: integer
+                description: Remaining days until harvest.
+                example: 85
+              total_hasil_ton:
+                type: number
+                format: float
+                description: Total estimated yield in tons.
+                example: 400.5
+              total_hasil_kilogram:
+                type: number
+                format: float
+                description: Total estimated yield in kilograms.
+                example: 400500.0
+              total_harga_rupiah:
+                type: integer
+                description: Total estimated price in Indonesian Rupiah.
+                example: 2002500000
+        400:
+          description: Invalid input or calculation error.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: Error details.
+                example: "Invalid date format"
+        401:
+          description: Unauthorized, JWT token is missing or invalid.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message for unauthorized access.
+                example: "Unauthorized: Invalid or missing token"
+        404:
+          description: Invalid plant type.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message for invalid plant type.
+                example: "Failed calculation, not valid name of plant"
