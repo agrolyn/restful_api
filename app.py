@@ -2,7 +2,7 @@ from datetime import timedelta
 import os
 from flask import Flask, render_template
 from itsdangerous import URLSafeTimedSerializer
-from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller, history_detection_controller, recom_controller, harvestcalc_controller
+from controllers import articles_controller, recipes_controller, auth_controller, profile_controller, community_controller, ecommerce_controller, videdu_controller, detection_controller, history_detection_controller, recom_controller, harvestcalc_controller, chatbot_controller
 # from controllers import detection_controller
 from models.models import db
 from flask_migrate import Migrate
@@ -340,6 +340,14 @@ def add_review():
 @jwt_required()
 def harvest_calc(plant):
     return harvestcalc_controller.harvestcalc(plant)
+
+#####################################################################
+############################ Chatbot ################################
+#####################################################################
+@app.route('/chatbot/agrobot/', methods=["POST"])
+@jwt_required()
+def chatbot():
+    return chatbot_controller.get_chatbot_res()
 
 if __name__ == "__main__":
     app.run(debug=True)
