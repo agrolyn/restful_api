@@ -2828,7 +2828,7 @@ paths:
       tags:
         - Harvest Calculation
       summary: Calculate Harvest Estimation
-      description: Calculate the estimated harvest date, yield, and total price for a given crop (corn or rice) based on planting date and land area.
+      description: Calculate the estimated harvest date, yield, and total price for a given crop (corn or rice) based on planting date, land area, and optional price per kilogram.
       parameters:
         - name: plant
           in: path
@@ -2859,6 +2859,11 @@ paths:
                 format: float
                 description: Land area in square meters.
                 example: 1000.5
+              harga_per_kg:
+                type: number
+                format: float
+                description: (Optional) Price per kilogram in Indonesian Rupiah. Default is 6000 for rice and 5000 for corn.
+                example: 5500
       responses:
         200:
           description: Harvest estimation calculated successfully.
@@ -2884,10 +2889,15 @@ paths:
                 format: float
                 description: Total estimated yield in kilograms.
                 example: 400500.0
+              harga_per_kg:
+                type: number
+                format: float
+                description: Price per kilogram used for the calculation.
+                example: 5500
               total_harga_rupiah:
                 type: integer
                 description: Total estimated price in Indonesian Rupiah.
-                example: 2002500000
+                example: 2202500000
         400:
           description: Invalid input or calculation error.
           schema:
