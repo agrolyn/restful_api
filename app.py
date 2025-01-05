@@ -164,7 +164,7 @@ def get_detail_question(id):
     return community_controller.get_detail_question(id)
 
 # Filtering
-@app.route("/community/questions/filters/<string:filter_name>/", methods=["GET"])
+@app.route("/community/questions/filters/<string:filter_name>/", methods=["GET"], strict_slashes=False)
 @jwt_required()
 def get_filtered_question(filter_name):
     return community_controller.get_filtered_question(filter_name)
