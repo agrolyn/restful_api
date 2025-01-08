@@ -1,6 +1,7 @@
 from groq import Groq
 import os
 from flask import jsonify, request
+import requests
 
 def get_chatbot_res():
     data = request.get_json()
@@ -34,3 +35,28 @@ def get_chatbot_res():
     return jsonify({
         "message": "Gagal menampilkan hasil respon chatbot",
     }), 404
+
+def get_chatbot_llama_pretrained():
+    data = request.get_json()
+    prompt = data.get("prompt")
+
+    chabot_api_url = "https://chatbot.linggashop.my.id/chatbot"
+    payload = {"prompt": prompt}
+
+    try:
+        response = requests.post(chabot_api_url, json=payload)
+        response.raise_for_status()  # Raise exception for HTTP errors
+        chatbot_res = response.json()
+        res = chatbot_res.get("chat", "Tidak dapat memproses pertanyaan yang diajukan")
+
+        return jsonify({
+            "message": "Sukses menampilkan hasil respon chatbot llama pre-trained",
+            "res_answer": res
+        })
+    except requests.RequestException as e:
+        return jsonify({
+            "status": "error",
+            "message": "Kesalahan saat memproses analisis sentimen.",
+            "error": str(e)
+        }), 500
+    

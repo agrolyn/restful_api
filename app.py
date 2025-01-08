@@ -349,9 +349,10 @@ def harvest_calc(plant):
 def chatbot():
     return chatbot_controller.get_chatbot_res()
 
-@app.route('/huggingface-chatbot-pretrained/', methods=["POST"])
+@app.route('/chatbot/llama-pretrained/', methods=["POST"])
+@jwt_required()
 def hug_chatbot():
-    return chatbot_controller.get_huggingface_chatbot()
+    return chatbot_controller.get_chatbot_llama_pretrained()
 
 if __name__ == "__main__":
     app.run(debug=True)

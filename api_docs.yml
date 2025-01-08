@@ -3007,3 +3007,85 @@ paths:
                   error:
                     type: string
                     example: "Model gagal merespons."
+
+  /chatbot/llama-pretrained/:
+    post:
+      tags:
+        - "Chatbot AGROBOT by LLAMA Pre-Trained Model"
+      summary: "Interaksi dengan Chatbot AGROBOT"
+      description: >
+        Mengirimkan prompt ke Chatbot AGROBOT untuk mendapatkan jawaban terkait bidang agraria atau pertanian. 
+        Jika pertanyaan di luar topik pertanian, chatbot akan memberikan penolakan dengan bahasa yang santun.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+          description: >
+            JWT token untuk otorisasi (misalnya, 'Bearer <access_token>').
+        - name: Prompt Chatbot
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              prompt:
+                type: string
+                example: "Apa itu irigasi tetes dan bagaimana cara kerjanya?"
+      responses:
+        200:
+          description: "Sukses menampilkan hasil respon chatbot."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Sukses menampilkan hasil respon chatbot"
+                  res_answer:
+                    type: string
+                    example: "Irigasi tetes adalah sistem irigasi yang mengalirkan air langsung ke akar tanaman melalui pipa kecil dan tetesan yang diatur secara presisi."
+        400:
+          description: "Permintaan tidak valid atau parameter yang diperlukan tidak disertakan."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Permintaan tidak valid, pastikan parameter yang diperlukan sudah disertakan."
+        401:
+          description: "Token otorisasi tidak valid atau kadaluarsa."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Token otorisasi tidak valid atau kadaluarsa."
+        404:
+          description: "Gagal menampilkan hasil respon chatbot."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Gagal menampilkan hasil respon chatbot."
+        500:
+          description: "Kesalahan server internal."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Kesalahan server internal, coba lagi nanti."
+                  error:
+                    type: string
+                    example: "Model gagal merespons."
