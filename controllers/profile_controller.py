@@ -3,6 +3,7 @@ from flask import *
 from flask_jwt_extended import get_jwt_identity
 from models.models import *
 from utils import image_uploaded
+import requests
 from sqlalchemy.exc import SQLAlchemyError
     
 def edit_profile():
@@ -48,7 +49,7 @@ def edit_profile():
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({'status': 'error', 'message': 'Kesalahan saat mengupdate profil', 'error': str(e)}), 500
-    
+
 def rating_users():
     try:
         user_identity = get_jwt_identity()
@@ -56,46 +57,57 @@ def rating_users():
         data = request.get_json()
         datenow = datetime.now()
 
+        if users_id is None:
+            return jsonify({"message": "Pengguna tidak valid."}), 404
+
         name = user_identity.get("name")
         review = data.get("review")
-        rating = int(data.get("rating"))
         released_date = datenow.strftime('%Y-%m-%d %H:%M:%S')
-        type_review = ''
 
-        if rating == 1:
-            type_review = "Komentar Negatif"
-        elif rating == 2:
-            type_review = "Komentar Negatif"
-        elif rating == 3:
-            type_review = "Komentar Netral"
-        elif rating == 4:
-            type_review = "Komentar Positif"
-        elif rating == 5:
-            type_review = "Komentar Positif"
+        # Call sentiment analysis API
+        sentiment_api_url = "https://sentiment.linggashop.my.id/sentiment"
+        payload = {"text": review}
 
+        try:
+            response = requests.post(sentiment_api_url, json=payload)
+            response.raise_for_status()  # Raise exception for HTTP errors
+            sentiment_data = response.json()
+            type_review = sentiment_data.get("type_review", "Tidak Diketahui")
+        except requests.RequestException as e:
+            return jsonify({
+                "status": "error",
+                "message": "Kesalahan saat memproses analisis sentimen.",
+                "error": str(e)
+            }), 500
+
+        # Assuming rating is still provided by the user
+        rating = int(data.get("rating", 0))
+
+        # Create a new review entry
         new_review_user = ReviewUsers(
             name=name,
             users_id=users_id,
             review=review,
             rating=rating,
             type_review=type_review,
-            released_date=released_date    
+            released_date=released_date
         )
 
         db.session.add(new_review_user)
 
-        # Menyimpan perubahan ke database
+        # Commit changes to the database
         db.session.commit()
 
-        if users_id is None:
-            return jsonify({"message": "Pengguna tidak valid."}), 404
-        else:
-            # Assuming you want to return the created review details
-            return jsonify({
-                "message": "Berhasil menambahkan ulasan aplikasi.",
-                "review": new_review_user.to_dict()
-            }), 200
+        # Return success response
+        return jsonify({
+            "message": "Berhasil menambahkan ulasan aplikasi.",
+            "review": new_review_user.to_dict()
+        }), 200
 
     except SQLAlchemyError as e:
         db.session.rollback()
-        return jsonify({'status': 'error', 'message': 'Kesalahan saat mengulas aplikasi', 'error': str(e)}), 500
+        return jsonify({
+            'status': 'error',
+            'message': 'Kesalahan saat mengulas aplikasi.',
+            'error': str(e)
+        }), 500

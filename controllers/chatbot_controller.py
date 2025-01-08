@@ -1,5 +1,5 @@
-import os
 from groq import Groq
+import os
 from flask import jsonify, request
 
 def get_chatbot_res():
