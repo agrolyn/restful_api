@@ -89,7 +89,7 @@ def rating_users():
             users_id=users_id,
             review=review,
             rating=rating,
-            type_review=type_review,
+            type_review=f"Komentar {type_review}",
             released_date=released_date
         )
 
